@@ -4,9 +4,10 @@ import rospkg
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtGui import QWidget
+from python_qt_binding.QtCore import Qt, qWarning, Signal
+from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton
 
-class MyPlugin(Plugin):
+class MyPlugin(Plugin,QWidget):
 
     def __init__(self, context):
         super(MyPlugin, self).__init__(context)
@@ -27,10 +28,12 @@ class MyPlugin(Plugin):
 
         # Create QWidget
         self._widget = QWidget()
+		#self.pushButton2 = QPushButton()
         # Get path to UI file which should be in the "resource" folder of this package
         ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'MyPlugin.ui')
         # Extend the widget with all attributes and children from UI file
         loadUi(ui_file, self._widget)
+
         # Give QObjects reasonable names
         self._widget.setObjectName('MyPluginUi')
         # Show _widget.windowTitle on left-top of each plugin (when 
@@ -41,8 +44,15 @@ class MyPlugin(Plugin):
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
+	
         context.add_widget(self._widget)
-
+        #context.add_widget(self.pushButton)
+        self._widget.pushButton2.clicked[bool].connect(self._change_Text)
+	
+    def _change_Text(self):
+		print("Hello World")
+		self._widget.pushButton2.setEnabled(False)
+		
     def shutdown_plugin(self):
         # TODO unregister all publishers here
         pass
