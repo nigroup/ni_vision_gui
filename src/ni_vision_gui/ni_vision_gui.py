@@ -8,7 +8,7 @@ from python_qt_binding import loadUi
 from python_qt_binding.QtCore import Qt, qWarning, Signal
 from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton, QImage
 
-from sensor_msgs.msg import CompressedImage
+from sensor_msgs.msg import Image
 
 class MyPlugin(Plugin,QWidget):
 
@@ -62,7 +62,7 @@ class MyPlugin(Plugin,QWidget):
 		#rospy.init_node('node_name')
 		#nodelist = rosnode('list')
 		#print(nodelist[-1])
-    		self.subcriber = rospy.Subscriber("/camera/image/compressed", CompressedImage, self.callback)
+    		self.subcriber = rospy.Subscriber("/camera/rgb/image_raw", Image)
     		# spin() simply keeps python from exiting until this node is stopped
    		#rospy.spin()
 
