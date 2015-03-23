@@ -1,11 +1,14 @@
 import os
 import rospy
 import rospkg
+import rosgraph
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
 from python_qt_binding.QtCore import Qt, qWarning, Signal
-from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton
+from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton, QImage
+
+from sensor_msgs.msg import CompressedImage
 
 class MyPlugin(Plugin,QWidget):
 
@@ -28,7 +31,7 @@ class MyPlugin(Plugin,QWidget):
 
         # Create QWidget
         self._widget = QWidget()
-		#self.pushButton2 = QPushButton()
+
         # Get path to UI file which should be in the "resource" folder of this package
         ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'MyPlugin.ui')
         # Extend the widget with all attributes and children from UI file
@@ -44,15 +47,25 @@ class MyPlugin(Plugin,QWidget):
         if context.serial_number() > 1:
             self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
         # Add widget to the user interface
-	
         context.add_widget(self._widget)
-        #context.add_widget(self.pushButton)
+        
+        # Add Signals to the widget elements
         self._widget.pushButton2.clicked[bool].connect(self._change_Text)
-	
+	master = rosgraph.Master('ni_vision_gui')	
+	self._topic_data_list = master.getPublishedTopics('')
+	self._counter = 0	
+
     def _change_Text(self):
-		print("Hello World")
-		self._widget.pushButton2.setEnabled(False)
-		
+		print(self._topic_data_list[self._counter])
+		self._counter += 1
+		#self.registerSubscriber('ni_vision_gui','/camera/rgb/image_raw','sensor_msgs/Image','')
+		#rospy.init_node('node_name')
+		#nodelist = rosnode('list')
+		#print(nodelist[-1])
+    		self.subcriber = rospy.Subscriber("/camera/image/compressed", CompressedImage, self.callback)
+    		# spin() simply keeps python from exiting until this node is stopped
+   		#rospy.spin()
+
     def shutdown_plugin(self):
         # TODO unregister all publishers here
         pass
@@ -71,3 +84,8 @@ class MyPlugin(Plugin,QWidget):
         # Comment in to signal that the plugin has a way to configure
         # This will enable a setting button (gear icon) in each dock widget title bar
         # Usually used to open a modal configuration dialog
+
+    def callback(self, data):
+    	rospy.loginfo("I heard %s",data.data)
+
+

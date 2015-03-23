@@ -6,3 +6,5 @@ When you first use the terminal, you have to do:
 Then the rqt_plugin can be started with:
 
 rqt --standalone ni_vision_gui
+
+
