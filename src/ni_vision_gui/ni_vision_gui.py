@@ -5,87 +5,100 @@ import rosgraph
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtCore import Qt, qWarning, Signal
-from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton, QImage
+from python_qt_binding.QtCore import Qt, qWarning, Signal, QObject
+from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton, QImage, QPixmap
 
-from sensor_msgs.msg import Image
+from PyQt4.QtCore import pyqtSignal
+from sensor_msgs.msg import Image, CompressedImage
 
 class MyPlugin(Plugin,QWidget):
+	
+	# Has to be outside of the constructor, signal also transmits an image in raw data format
+	trigger = pyqtSignal(str)
+	
+	def __init__(self, context):
+		super(MyPlugin, self).__init__(context)
+		# Give QObjects reasonable names
+		self.setObjectName('MyPlugin')
 
-    def __init__(self, context):
-        super(MyPlugin, self).__init__(context)
-        # Give QObjects reasonable names
-        self.setObjectName('MyPlugin')
+		# Process standalone plugin command-line arguments
+		from argparse import ArgumentParser
+		parser = ArgumentParser()
+		# Add argument(s) to the parser.
+		parser.add_argument("-q", "--quiet", action="store_true",
+					  dest="quiet",
+					  help="Put plugin in silent mode")
+		args, unknowns = parser.parse_known_args(context.argv())
+		if not args.quiet:
+			print 'arguments: ', args
+			print 'unknowns: ', unknowns
 
-        # Process standalone plugin command-line arguments
-        from argparse import ArgumentParser
-        parser = ArgumentParser()
-        # Add argument(s) to the parser.
-        parser.add_argument("-q", "--quiet", action="store_true",
-                      dest="quiet",
-                      help="Put plugin in silent mode")
-        args, unknowns = parser.parse_known_args(context.argv())
-        if not args.quiet:
-            print 'arguments: ', args
-            print 'unknowns: ', unknowns
+		# Create QWidget
+		self._widget = QWidget()
 
-        # Create QWidget
-        self._widget = QWidget()
+		# Get path to UI file which should be in the "resource" folder of this package
+		ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'MyPlugin.ui')
+		# Extend the widget with all attributes and children from UI file
+		loadUi(ui_file, self._widget)
 
-        # Get path to UI file which should be in the "resource" folder of this package
-        ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'MyPlugin.ui')
-        # Extend the widget with all attributes and children from UI file
-        loadUi(ui_file, self._widget)
-
-        # Give QObjects reasonable names
-        self._widget.setObjectName('MyPluginUi')
-        # Show _widget.windowTitle on left-top of each plugin (when 
-        # it's set in _widget). This is useful when you open multiple 
-        # plugins at once. Also if you open multiple instances of your 
-        # plugin at once, these lines add number to make it easy to 
-        # tell from pane to pane.
-        if context.serial_number() > 1:
-            self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
-        # Add widget to the user interface
-        context.add_widget(self._widget)
-        
-        # Add Signals to the widget elements
-        self._widget.pushButton2.clicked[bool].connect(self._change_Text)
-	master = rosgraph.Master('ni_vision_gui')	
-	self._topic_data_list = master.getPublishedTopics('')
-	self._counter = 0	
-
-    def _change_Text(self):
+		# Give QObjects reasonable names
+		self._widget.setObjectName('MyPluginUi')
+		# Show _widget.windowTitle on left-top of each plugin (when 
+		# it's set in _widget). This is useful when you open multiple 
+		# plugins at once. Also if you open multiple instances of your 
+		# plugin at once, these lines add number to make it easy to 
+		# tell from pane to pane.
+		if context.serial_number() > 1:
+			self._widget.setWindowTitle(self._widget.windowTitle() + (' (%d)' % context.serial_number()))
+		# Add widget to the user interface
+		context.add_widget(self._widget)
+		
+		# Add Signals to the widget elements
+		self._widget.pushButton2.clicked[bool].connect(self._change_Text)
+		master = rosgraph.Master('ni_vision_gui')	
+		self._topic_data_list = master.getPublishedTopics('')
+		self._counter = 0	
+		#self._widget.label2.setPixmap( QPixmap.fromImage(QImage(data.data,320,240,QImage.Format_Indexed8)) );
+		
+		
+		self.trigger.connect(self.paint)
+		
+		self.subcriber = rospy.Subscriber("/camera/rgb/image_raw/compressed", CompressedImage, self.callback)
+	
+	
+	def _change_Text(self):
 		print(self._topic_data_list[self._counter])
 		self._counter += 1
-		#self.registerSubscriber('ni_vision_gui','/camera/rgb/image_raw','sensor_msgs/Image','')
-		#rospy.init_node('node_name')
-		#nodelist = rosnode('list')
-		#print(nodelist[-1])
-    		self.subcriber = rospy.Subscriber("/camera/rgb/image_raw", Image)
-    		# spin() simply keeps python from exiting until this node is stopped
-   		#rospy.spin()
+			
+	def paint(self,image):
+		print(type(image))
+		#pixmap = QPixmap(320,240)
+		#pixmap.loadFromData(image,76800)
+		#self._widget.label2.setPixmap(pixmap)
 
-    def shutdown_plugin(self):
-        # TODO unregister all publishers here
-        pass
+	def shutdown_plugin(self):
+		# TODO unregister all publishers here
+		pass
 
-    def save_settings(self, plugin_settings, instance_settings):
-        # TODO save intrinsic configuration, usually using:
-        # instance_settings.set_value(k, v)
-        pass
+	def save_settings(self, plugin_settings, instance_settings):
+		# TODO save intrinsic configuration, usually using:
+		# instance_settings.set_value(k, v)
+		pass
 
-    def restore_settings(self, plugin_settings, instance_settings):
-        # TODO restore intrinsic configuration, usually using:
-        # v = instance_settings.value(k)
-        pass
+	def restore_settings(self, plugin_settings, instance_settings):
+		# TODO restore intrinsic configuration, usually using:
+		# v = instance_settings.value(k)
+		pass
 
-    #def trigger_configuration(self):
-        # Comment in to signal that the plugin has a way to configure
-        # This will enable a setting button (gear icon) in each dock widget title bar
-        # Usually used to open a modal configuration dialog
+	#def trigger_configuration(self):
+		# Comment in to signal that the plugin has a way to configure
+		# This will enable a setting button (gear icon) in each dock widget title bar
+		# Usually used to open a modal configuration dialog
 
-    def callback(self, data):
-    	rospy.loginfo("I heard %s",data.data)
-
-
+	# This function is called everytime a new message arrives, data is the message it receives
+	def callback(self, data):
+		#rospy.loginfo("I heard %s",data.data)
+		print("Hello World")
+		#self._widget.label2.setText("Hello World")
+		#self._widget.label2.setPixmap( QPixmap("/home/fritjof/Hausboot1.jpg") )
+		self.trigger.emit(data.data)

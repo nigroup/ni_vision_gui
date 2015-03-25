@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>481</width>
-    <height>304</height>
+    <width>975</width>
+    <height>795</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -34,6 +34,19 @@
      <widget class="QGraphicsView" name="graphicsView"/>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="label2">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>370</y>
+     <width>591</width>
+     <height>381</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
   </widget>
  </widget>
  <resources/>
