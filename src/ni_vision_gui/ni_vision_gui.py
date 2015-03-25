@@ -63,7 +63,7 @@ class MyPlugin(Plugin,QWidget):
 		
 		self.trigger.connect(self.paint)
 		
-		self.subcriber = rospy.Subscriber("/camera/rgb/image_raw/compressed", CompressedImage, self.callback)
+		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", CompressedImage, self.callback)
 	
 	
 	def _change_Text(self):
