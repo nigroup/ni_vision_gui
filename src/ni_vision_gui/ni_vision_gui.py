@@ -3,6 +3,7 @@ import rospy
 import rospkg
 import rosgraph
 import numpy as np
+from SegmentationParameterDialog import SegmentationParameterDialog
 
 import cv2
 
@@ -72,7 +73,7 @@ class MyPlugin(Plugin):
 		
 		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
 		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialog)
-		self.connect(self._widget.pushButton_1, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
+		self.connect(self._widget.pushButton, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
 		
 	
 	def showFileDialog(self):
@@ -81,8 +82,8 @@ class MyPlugin(Plugin):
 		# Todo Display file name in label and use for recognition
 	
 	def showSegmentationParametersDialog(self):
-		pass
-		
+		self.dialog = SegmentationParameterDialog(None)
+        #result = dialog.exec_()
 	
 	def _change_Text(self):
 		print(self._topic_data_list[self._counter])
