@@ -62,33 +62,18 @@ class MyPlugin(Plugin,QWidget):
 		self._widget.pushButton2.clicked[bool].connect(self._change_Text)
 		master = rosgraph.Master('ni_vision_gui')	
 		self._topic_data_list = master.getPublishedTopics('')
-		self._counter = 0	
-		#self._widget.label2.setPixmap( QPixmap.fromImage(QImage(data.data,320,240,QImage.Format_Indexed8)) );
+		self._counter = 0
 		
+		# Used to translate between Ros Image and numpy array			
 		self.bridge = CvBridge()
 		
+		# Slot for updating gui, since the callback function has its own thread
 		self.trigger.connect(self.paint)
 		
 		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
-	
-	
-	def _change_Text(self):
-		print(self._topic_data_list[self._counter])
-		self._counter += 1
 			
-	def paint(self,data):
-		
-		#pixmap = QPixmap(1280, 1024)
-		#pixmap.loadFromData(self._image,1310720)
-		#print(self._image)
-		#self._widget.label2.setPixmap(pixmap)
-		#self._widget.label2.setPixmap( QPixmap("/home/fritjof/Hausboot1.jpg") )
-		print((self._image[:,:,1]).shape)
-		a = self._image[:,:,1].reshape(240,320,1)
-		print(type(a))
-		print(type(self._image))
+	def paint(self,data):	
 		qim = QImage(self._image,320,240,QImage.Format_RGB888)
-		#qim.setColorTable([qRgb(i, j, k) for i,j,k in range(256)])
 		self._widget.label2.setPixmap( QPixmap.fromImage(qim) );
 		
 	def shutdown_plugin(self):
@@ -113,11 +98,4 @@ class MyPlugin(Plugin,QWidget):
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback(self, data):
 		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		#rospy.loginfo("I heard %s",data.data)
-		#cv2.namedWindow("Image window", 1)
-		#cv2.imshow("Image window", cv_image)
-		#cv2.waitKey(3)
-		#print(data.data)
-		#self._widget.label2.setText("Hello World")
-		#self._widget.label2.setPixmap( QPixmap("/home/fritjof/Hausboot1.jpg") )
 		self.trigger.emit(data.data)
