@@ -20,6 +20,6 @@ class SegmentationParameterDialog(QDialog):
     def __init__(self, parent = None):
         super(SegmentationParameterDialog, self).__init__(parent)
 	# Get path to UI file which should be in the "resource" folder of this package
-	ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'SegmentationParameterDialog.ui')
+	ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'RecognitionParameterDialog.ui')
 	# Extend the widget with all attributes and children from UI file
 	loadUi(ui_file, self)

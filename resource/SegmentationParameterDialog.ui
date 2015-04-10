@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>293</width>
-    <height>178</height>
+    <width>471</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,36 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
+       <widget class="QComboBox" name="comboBox">
+        <property name="editable">
+         <bool>false</bool>
+        </property>
+        <item>
+         <property name="text">
+          <string>Mode 1</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mode 2</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
        <widget class="QSlider" name="horizontalSlider">
+        <property name="maximum">
+         <number>1</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
+        <property name="value">
+         <number>1</number>
+        </property>
+        <property name="sliderPosition">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -41,34 +70,56 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox">
-        <property name="editable">
-         <bool>false</bool>
+       <widget class="QSlider" name="horizontalSlider_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <item>
-         <property name="text">
-          <string>Rot</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Blau</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Grün</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Gelb</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_4">
+       <widget class="QSlider" name="horizontalSlider_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_5">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_6">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_7">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_8">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_9">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="horizontalSlider_10">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -89,28 +140,77 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Parameter 1</string>
+         <string>Tracking Mode</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_2">
         <property name="text">
-         <string>Parameter 2</string>
+         <string>Maximum position difference</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Parameter 3</string>
+         <string>Maximum color difference</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
-         <string>Parameter 4</string>
+         <string>Maximum size difference</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Position factor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Color factor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Size factor</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Maximum total difference</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Objects upper size limit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Objects lower size limit</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Objects mimium pixelcount</string>
         </property>
        </widget>
       </item>
