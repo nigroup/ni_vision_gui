@@ -43,12 +43,12 @@ class MyPlugin(Plugin):
 		self._widget = QWidget()
 
 		# Get path to UI file which should be in the "resource" folder of this package
-		ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'MyPlugin.ui')
+		ui_file = os.path.join(rospkg.RosPack().get_path('ni_vision_gui'), 'resource', 'ni_vision_gui.ui')
 		# Extend the widget with all attributes and children from UI file
 		loadUi(ui_file, self._widget)
 
 		# Give QObjects reasonable names
-		self._widget.setObjectName('MyPluginUi')
+		self._widget.setObjectName('NIVisionGui')
 		# Show _widget.windowTitle on left-top of each plugin (when 
 		# it's set in _widget). This is useful when you open multiple 
 		# plugins at once. Also if you open multiple instances of your 
@@ -82,8 +82,8 @@ class MyPlugin(Plugin):
 		# Todo Display file name in label and use for recognition
 	
 	def showSegmentationParametersDialog(self):
-		self.dialog = SegmentationParameterDialog(None)
-        #result = dialog.exec_()
+		SegmentationParameterDialog(None).exec_()
+        
 	
 	def _change_Text(self):
 		print(self._topic_data_list[self._counter])
