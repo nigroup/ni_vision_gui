@@ -8,15 +8,15 @@ import cv2
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
-from python_qt_binding.QtCore import Qt, qWarning, Signal, QObject
-from python_qt_binding.QtGui import QFileDialog, QGraphicsView, QIcon, QWidget, QPushButton, QImage, QPixmap, qRgb
+from python_qt_binding.QtCore import *
+from python_qt_binding.QtGui import *
 
 from cv_bridge import CvBridge, CvBridgeError
 
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 
-class MyPlugin(Plugin,QWidget):
+class MyPlugin(Plugin):
 	
 	# Has to be outside of the constructor, signal also transmits an image in raw data format
 	trigger = pyqtSignal(str)
@@ -59,7 +59,7 @@ class MyPlugin(Plugin,QWidget):
 		context.add_widget(self._widget)
 		
 		# Add Signals to the widget elements
-		self._widget.pushButton2.clicked[bool].connect(self._change_Text)
+		self._widget.pushButton_2.clicked[bool].connect(self._change_Text)
 		master = rosgraph.Master('ni_vision_gui')	
 		self._topic_data_list = master.getPublishedTopics('')
 		self._counter = 0
@@ -71,10 +71,26 @@ class MyPlugin(Plugin,QWidget):
 		self.trigger.connect(self.paint)
 		
 		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
+		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialog)
+		#self.connect(self._widget.pushButton_1, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
+		
+	
+	def showFileDialog(self):
+		filename2 = QFileDialog.getOpenFileName(self._widget, 'Open file',
+                    '/home')
+		# Todo Display file name in label and use for recognition
+	
+	def showSegmentationParametersDialog(self):
+		pass
+		
+	
+	def _change_Text(self):
+		print(self._topic_data_list[self._counter])
+		self._counter += 1
 			
 	def paint(self,data):	
 		qim = QImage(self._image,320,240,QImage.Format_RGB888)
-		self._widget.label2.setPixmap( QPixmap.fromImage(qim) );
+		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
