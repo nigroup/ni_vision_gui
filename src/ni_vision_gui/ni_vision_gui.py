@@ -72,7 +72,7 @@ class MyPlugin(Plugin):
 		
 		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
 		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialog)
-		#self.connect(self._widget.pushButton_1, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
+		self.connect(self._widget.pushButton_1, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
 		
 	
 	def showFileDialog(self):
