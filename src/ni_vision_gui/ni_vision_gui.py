@@ -96,8 +96,9 @@ class MyPlugin(Plugin):
 		# Todo extract file name from path and use for recognition
 	
 	def showSegmentationParameterDialog(self):
-		SegmentationParameterDialog(None).show()
-		
+		d = SegmentationParameterDialog()
+		d.show()
+				
 	def showRecognitionParameterDialog(self):
 		RecognitionParameterDialog(None).show()
 	
