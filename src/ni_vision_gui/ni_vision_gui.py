@@ -96,12 +96,13 @@ class MyPlugin(Plugin):
 		# Todo extract file name from path and use for recognition
 	
 	def showSegmentationParameterDialog(self):
-		d = SegmentationParameterDialog()
-		d.show()
+		self._SPDialog = SegmentationParameterDialog()
+		self._SPDialog.show()
 				
 	def showRecognitionParameterDialog(self):
-		RecognitionParameterDialog(None).show()
-	
+		self._RPDialog = RecognitionParameterDialog()
+		self._RPDialog.show()
+			
 	def _change_Text(self):
 		print(self._topic_data_list[self._counter])
 		self._counter += 1
