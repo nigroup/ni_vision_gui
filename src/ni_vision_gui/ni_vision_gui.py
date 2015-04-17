@@ -4,6 +4,8 @@ import rospkg
 import rosgraph
 import numpy as np
 from SegmentationParameterDialog import SegmentationParameterDialog
+from RecognitionParameterDialog import RecognitionParameterDialog
+
 
 import cv2
 
@@ -61,37 +63,51 @@ class MyPlugin(Plugin):
 		
 		# Add Signals to the widget elements
 		self._widget.pushButton_2.clicked[bool].connect(self._change_Text)
-		master = rosgraph.Master('ni_vision_gui')	
+		master = rosgraph.Master('ni_vision_gui')   
 		self._topic_data_list = master.getPublishedTopics('')
 		self._counter = 0
 		
-		# Used to translate between Ros Image and numpy array			
+		# Used to translate between Ros Image and numpy array		   
 		self.bridge = CvBridge()
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.trigger.connect(self.paint)
 		
+		# topic subscribtions
 		self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
-		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialog)
-		self.connect(self._widget.pushButton, SIGNAL('clicked()'), self.showSegmentationParametersDialog)
+		
+		# Push button click events
+		self.connect(self._widget.pushButton, SIGNAL('clicked()'), self.showFileDialogSIFT)
+		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialogColor)
+		self.connect(self._widget.pushButton_3, SIGNAL('clicked()'), self.showRecognitionParameterDialog)
+		self.connect(self._widget.pushButton_4, SIGNAL('clicked()'), self.showSegmentationParameterDialog)
 		
 	
-	def showFileDialog(self):
-		filename2 = QFileDialog.getOpenFileName(self._widget, 'Open file',
-                    '/home')
-		# Todo Display file name in label and use for recognition
+	def showFileDialogSIFT(self):
+		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
+					'/home')
+		self._widget.SIFT_path_label.setText(str(filename))
+		# Todo extract file name from path and use for recognition
 	
-	def showSegmentationParametersDialog(self):
-		SegmentationParameterDialog(None).exec_()
-        
+	def showFileDialogColor(self):
+		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
+					'/home')
+		self._widget.color_path_label.setText(str(filename))
+		# Todo extract file name from path and use for recognition
+	
+	def showSegmentationParameterDialog(self):
+		SegmentationParameterDialog(None).show()
+		
+	def showRecognitionParameterDialog(self):
+		RecognitionParameterDialog(None).show()
 	
 	def _change_Text(self):
 		print(self._topic_data_list[self._counter])
 		self._counter += 1
 			
-	def paint(self,data):	
+	def paint(self,data):   
 		qim = QImage(self._image,320,240,QImage.Format_RGB888)
-		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
+		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
@@ -114,5 +130,6 @@ class MyPlugin(Plugin):
 
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback(self, data):
-		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger.emit(data.data)
+		if self._widget.comboBox_2.currentText() == 'camera/rgb/image_color':
+			self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+			self.trigger.emit(data.data)
