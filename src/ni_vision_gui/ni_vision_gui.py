@@ -81,7 +81,7 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialogColor)
 		self.connect(self._widget.pushButton_3, SIGNAL('clicked()'), self.showRecognitionParameterDialog)
 		self.connect(self._widget.pushButton_4, SIGNAL('clicked()'), self.showSegmentationParameterDialog)
-		
+
 	
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
