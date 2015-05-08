@@ -84,18 +84,20 @@ class MyPlugin(Plugin):
         
         # Topic in Combobox was chosen
         self.connect(self._widget.comboBox_2, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen)
+		
 
     def topic_chosen(self, chosen_topic_name):
+        # Shutdown all old topic subscriptions
         try:
-			self.subscriber.shutdown()
+			self.subscriber.unregister()
         except:
 			pass
-        if chosen_topic_name == "":
+        if chosen_topic_name == "Choose Topic":
             # TODO: display empty image
             pass
         else:
             # topic subscribtions
-            self.subcriber = rospy.Subscriber(chosen_topic_name, Image, self.callback)
+            self.subscriber = rospy.Subscriber(chosen_topic_name, Image, self.callback)
     
     def showFileDialogSIFT(self):
         filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
