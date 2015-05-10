@@ -188,33 +188,33 @@ class MyPlugin(Plugin):
 
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback1(self, data):
-		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+		self._image1 = self.bridge.imgmsg_to_cv2(data, "rgb8")
 		self.trigger1.emit(data.data)
 	
 	def callback2(self, data):
-		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+		self._image2 = self.bridge.imgmsg_to_cv2(data, "rgb8")
 		self.trigger2.emit(data.data)
 		
 	def callback3(self, data):
-		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+		self._image3 = self.bridge.imgmsg_to_cv2(data, "rgb8")
 		self.trigger3.emit(data.data)
 		
 	def callback4(self, data):
-		self._image = self.bridge.imgmsg_to_cv2(data, "rgb8")
+		self._image4 = self.bridge.imgmsg_to_cv2(data, "rgb8")
 		self.trigger4.emit(data.data)
 	
 	def paint1(self,data):   
-		qim = QImage(self._image,320,240,QImage.Format_RGB888)
+		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
 		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
 		
 	def paint2(self,data):   
-		qim = QImage(self._image,320,240,QImage.Format_RGB888)
+		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
 		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
 		
 	def paint3(self,data):   
-		qim = QImage(self._image,320,240,QImage.Format_RGB888)
+		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
 		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
 		
 	def paint4(self,data):   
-		qim = QImage(self._image,320,240,QImage.Format_RGB888)
+		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
 		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
