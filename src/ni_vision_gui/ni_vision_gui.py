@@ -3,6 +3,8 @@ import rospy
 import rospkg
 import rosgraph
 import numpy as np
+import matplotlib.cm as cm
+import matplotlib.colors as colors
 from SegmentationParameterDialog import SegmentationParameterDialog
 from RecognitionParameterDialog import RecognitionParameterDialog
 
@@ -19,6 +21,8 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 
+
+
 class MyPlugin(Plugin):
 	
 	# Has to be outside of the constructor, signal also transmits an image in raw data format
@@ -30,7 +34,7 @@ class MyPlugin(Plugin):
 	def __init__(self, context):
 		super(MyPlugin, self).__init__(context)
 		# Give QObjects reasonable names
-		self.setObjectName('MyPlugin')
+		self.setObjectName('NiVisionGui')
 
 		# Process standalone plugin command-line arguments
 		from argparse import ArgumentParser
@@ -53,7 +57,7 @@ class MyPlugin(Plugin):
 		loadUi(ui_file, self._widget)
 
 		# Give QObjects reasonable names
-		self._widget.setObjectName('NIVisionGui')
+		self._widget.setObjectName('NiVisionGui')
 		# Show _widget.windowTitle on left-top of each plugin (when 
 		# it's set in _widget). This is useful when you open multiple 
 		# plugins at once. Also if you open multiple instances of your 
@@ -70,7 +74,7 @@ class MyPlugin(Plugin):
 		self._counter = 0
 		
 		# Used to translate between Ros Image and numpy array		  
-		self.bridge = CvBridge()
+		self._bridge = CvBridge()
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.trigger1.connect(self.paint1)
@@ -189,7 +193,45 @@ class MyPlugin(Plugin):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
 			
+	# This function is called everytime a new message arrives, data is the message it receives
+	def callback1(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		norm = colors.Normalize(image_data.min(), image_data.max())
+		image_colors = cm.jet(norm(image_data[:,:,0])) 
+		image_colors = image_colors[:,:,0:3]
+		self._image1 = (255*image_colors).astype('int')
+		print(self._image1)
+		self.trigger1.emit(data.data)
 	
+	def callback2(self, data):
+		self._image2 = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		print(self._image2[:,:,0])
+		self.trigger2.emit(data.data)
+		
+	def callback3(self, data):
+		self._image3 = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		print(self._image3)
+		self.trigger3.emit(data.data)
+		
+	def callback4(self, data):
+		self._image4 = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		self.trigger4.emit(data.data)
+	
+	def paint1(self,data):   
+		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
+		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint2(self,data):   
+		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
+		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint3(self,data):   
+		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
+		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint4(self,data):   
+		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
+		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
@@ -209,37 +251,3 @@ class MyPlugin(Plugin):
 		# Comment in to signal that the plugin has a way to configure
 		# This will enable a setting button (gear icon) in each dock widget title bar
 		# Usually used to open a modal configuration dialog
-
-	# This function is called everytime a new message arrives, data is the message it receives
-	def callback1(self, data):
-		self._image1 = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		print(self._image1)
-		self.trigger1.emit(data.data)
-	
-	def callback2(self, data):
-		self._image2 = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger2.emit(data.data)
-		
-	def callback3(self, data):
-		self._image3 = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger3.emit(data.data)
-		
-	def callback4(self, data):
-		self._image4 = self.bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger4.emit(data.data)
-	
-	def paint1(self,data):   
-		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
-		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint2(self,data):   
-		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
-		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint3(self,data):   
-		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
-		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint4(self,data):   
-		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
-		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
