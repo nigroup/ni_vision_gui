@@ -102,9 +102,15 @@ class MyPlugin(Plugin):
 		if chosen_topic_name == "Choose Topic":
 			# TODO: display empty image
 			pass
-		else:
+		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
-			self.subscriber1 = rospy.Subscriber(chosen_topic_name, Image, self.callback1)
+			self.subscriber1 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback1)
+		elif chosen_topic_name == "Segmentation":
+			# topic subscribtions
+			self.subscriber1 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback1)
+		elif chosen_topic_name == "Tracking":
+			# topic subscribtions
+			self.subscriber1 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback1)
 	
 	def topic_chosen2(self, chosen_topic_name):
 		# unregister old topics
@@ -115,9 +121,15 @@ class MyPlugin(Plugin):
 		if chosen_topic_name == "Choose Topic":
 			# TODO: display empty image
 			pass
-		else:
+		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
-			self.subscriber2 = rospy.Subscriber(chosen_topic_name, Image, self.callback2)
+			self.subscriber2 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback2)
+		elif chosen_topic_name == "Segmentation":
+			# topic subscribtions
+			self.subscriber2 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback2)
+		elif chosen_topic_name == "Tracking":
+			# topic subscribtions
+			self.subscriber2 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback2)
 			
 	def topic_chosen3(self, chosen_topic_name):
 		# unregister old topics
@@ -128,9 +140,15 @@ class MyPlugin(Plugin):
 		if chosen_topic_name == "Choose Topic":
 			# TODO: display empty image
 			pass
-		else:
+		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
-			self.subscriber3 = rospy.Subscriber(chosen_topic_name, Image, self.callback3)
+			self.subscriber3 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback3)
+		elif chosen_topic_name == "Segmentation":
+			# topic subscribtions
+			self.subscriber3 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback3)
+		elif chosen_topic_name == "Tracking":
+			# topic subscribtions
+			self.subscriber3 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback3)
 			
 	def topic_chosen4(self, chosen_topic_name):
 		# unregister old topics
@@ -141,9 +159,15 @@ class MyPlugin(Plugin):
 		if chosen_topic_name == "Choose Topic":
 			# TODO: display empty image
 			pass
-		else:
+		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
-			self.subscriber4 = rospy.Subscriber(chosen_topic_name, Image, self.callback4)
+			self.subscriber4 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback4)
+		elif chosen_topic_name == "Segmentation":
+			# topic subscribtions
+			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback4)
+		elif chosen_topic_name == "Tracking":
+			# topic subscribtions
+			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback4)
 	
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
@@ -189,6 +213,7 @@ class MyPlugin(Plugin):
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback1(self, data):
 		self._image1 = self.bridge.imgmsg_to_cv2(data, "rgb8")
+		print(self._image1)
 		self.trigger1.emit(data.data)
 	
 	def callback2(self, data):
