@@ -30,7 +30,7 @@ class MyPlugin(Plugin):
 	trigger2 = pyqtSignal(str)
 	trigger3 = pyqtSignal(str)
 	trigger4 = pyqtSignal(str)
-	
+
 	def __init__(self, context):
 		super(MyPlugin, self).__init__(context)
 		# Give QObjects reasonable names
@@ -81,7 +81,7 @@ class MyPlugin(Plugin):
 		self.trigger2.connect(self.paint2)
 		self.trigger3.connect(self.paint3)
 		self.trigger4.connect(self.paint4)
-		
+
 		# topic subscribtions
 		#self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
 		
@@ -181,13 +181,22 @@ class MyPlugin(Plugin):
 		self._widget.color_path_label.setText(str(filename))
 		# Todo extract file name from path and use for recognition
 	
+	# show segmentation parameter dialog and connect sliders with values
 	def showSegmentationParameterDialog(self):
 		self._SPDialog = SegmentationParameterDialog()
 		self._SPDialog.show()
+		self.connect(self._SPDialog.horizontalSlider_10, SIGNAL('valueChanged(int)'), self.minimumCountChanged)
 				
+	def minimumCountChanged(self, n):
+        # Todo publish topic
+        # change displayed information about parameter
+		self._widget.label_9.setText(str(n))
+        #self.trigger5.emit(n)
+        
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
+			
 			
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback1(self, data):
@@ -214,6 +223,8 @@ class MyPlugin(Plugin):
 		self._image4 = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		self.trigger4.emit(data.data)
 	
+	
+	# paint methods for the four different qvga streams
 	def paint1(self,data):   
 		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
 		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
@@ -229,6 +240,7 @@ class MyPlugin(Plugin):
 	def paint4(self,data):   
 		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
 		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
+		
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
