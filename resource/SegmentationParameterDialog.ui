@@ -44,7 +44,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider">
+       <widget class="QSlider" name="horizontalSlider_1">
         <property name="maximum">
          <number>1</number>
         </property>

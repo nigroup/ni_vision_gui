@@ -76,6 +76,11 @@ class MyPlugin(Plugin):
 		# Used to translate between Ros Image and numpy array		  
 		self._bridge = CvBridge()
 		
+		# Define Segmentation and Recognition Parameter
+		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0, "maxColorDifference":0,
+									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
+									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
+		
 		# Slot for updating gui, since the callback function has its own thread
 		self.trigger1.connect(self.paint1)
 		self.trigger2.connect(self.paint2)
@@ -181,17 +186,67 @@ class MyPlugin(Plugin):
 		self._widget.color_path_label.setText(str(filename))
 		# Todo extract file name from path and use for recognition
 	
-	# show segmentation parameter dialog and connect sliders with values
+	# show segmentation parameter dialog and connect sliders to slots
 	def showSegmentationParameterDialog(self):
 		self._SPDialog = SegmentationParameterDialog()
 		self._SPDialog.show()
-		self.connect(self._SPDialog.horizontalSlider_10, SIGNAL('valueChanged(int)'), self.minimumCountChanged)
-				
-	def minimumCountChanged(self, n):
-        # Todo publish topic
-        # change displayed information about parameter
-		self._widget.label_9.setText(str(n))
-        #self.trigger5.emit(n)
+		self.connect(self._SPDialog.comboBox, SIGNAL('currentIndexChanged(QString)'), self.trackingModeChanged)
+		self.connect(self._SPDialog.horizontalSlider_1, SIGNAL('valueChanged(int)'), self.maxPositionDifferenceChanged)
+		self.connect(self._SPDialog.horizontalSlider_2, SIGNAL('valueChanged(int)'), self.maxColorDifferenceChanged)
+		self.connect(self._SPDialog.horizontalSlider_3, SIGNAL('valueChanged(int)'), self.maxSizeDifferenceChanged)
+		self.connect(self._SPDialog.horizontalSlider_4, SIGNAL('valueChanged(int)'), self.positionFactorChanged)
+		self.connect(self._SPDialog.horizontalSlider_5, SIGNAL('valueChanged(int)'), self.colorFactorChanged)
+		self.connect(self._SPDialog.horizontalSlider_6, SIGNAL('valueChanged(int)'), self.sizeFactorChanged)
+		self.connect(self._SPDialog.horizontalSlider_7, SIGNAL('valueChanged(int)'), self.maxTotalDifferenceChanged)
+		self.connect(self._SPDialog.horizontalSlider_8, SIGNAL('valueChanged(int)'), self.upperSizeLimitChanged)
+		self.connect(self._SPDialog.horizontalSlider_9, SIGNAL('valueChanged(int)'), self.lowerSizeLimitChanged)
+		self.connect(self._SPDialog.horizontalSlider_10, SIGNAL('valueChanged(int)'), self.minPixelCountChanged)
+
+	def trackingModeChanged(self, mode):
+		self._widget.label_9.setText(mode)
+		self._segmentationParameter["trackingMode"] = mode
+		
+	def maxPositionDifferenceChanged(self, n):
+		self._widget.label_10.setText(str(n))
+		self._segmentationParameter["maxPositionDifference"] = n
+		
+	def maxColorDifferenceChanged(self, n):
+		self._widget.label_12.setText(str(n))
+		self._segmentationParameter["maxColorDifference"] = n
+		
+	def maxSizeDifferenceChanged(self, n):
+		self._widget.label_6.setText(str(n))
+		self._segmentationParameter["maxSizeDifference"] = n
+		
+	def positionFactorChanged(self, n):
+		self._widget.label_7.setText(str(n))
+		self._segmentationParameter["positionFactor"] = n
+		
+	def colorFactorChanged(self, n):
+		self._widget.label_14.setText(str(n))
+		self._segmentationParameter["colorFactor"] = n
+		
+	def sizeFactorChanged(self, n):
+		self._widget.label_16.setText(str(n))
+		self._segmentationParameter["sizeFactor"] = n
+		
+	def maxTotalDifferenceChanged(self, n):
+		self._widget.label_23.setText(str(n))
+		self._segmentationParameter["maxTotalDifference"] = n
+		
+	def upperSizeLimitChanged(self, n):
+		self._widget.label_22.setText(str(n))
+		self._segmentationParameter["upperSizeLimit"] = n
+		
+	def lowerSizeLimitChanged(self, n):
+		self._widget.label_24.setText(str(n))
+		self._segmentationParameter["lowerSizeLimit"] = n
+
+	def minPixelCountChanged(self, n):
+		self._widget.label_26.setText(str(n))
+		self._segmentationParameter["minPixelCount"] = n
+        
+        
         
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
