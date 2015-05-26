@@ -199,18 +199,19 @@ class MyPlugin(Plugin):
 		norm = colors.Normalize(image_data.min(), image_data.max())
 		image_colors = cm.jet(norm(image_data[:,:,0])) 
 		image_colors = image_colors[:,:,0:3]
-		self._image1 = (255*image_colors).astype('int')
-		print(self._image1)
+		self._image1 = (255*image_colors).astype('byte')
 		self.trigger1.emit(data.data)
 	
 	def callback2(self, data):
-		self._image2 = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		print(self._image2[:,:,0])
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		norm = colors.Normalize(image_data.min(), image_data.max())
+		image_colors = cm.jet(norm(image_data[:,:,0])) 
+		image_colors = image_colors[:,:,0:3]
+		self._image2 = (255*image_colors).astype('byte')
 		self.trigger2.emit(data.data)
 		
 	def callback3(self, data):
 		self._image3 = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		print(self._image3)
 		self.trigger3.emit(data.data)
 		
 	def callback4(self, data):
