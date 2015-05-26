@@ -104,7 +104,7 @@ class MyPlugin(Plugin):
 		except:
 			pass
 		if chosen_topic_name == "Choose Topic":
-			self._widget.label_4.setText("QVGA Stream 1")
+			self._widget.label_1.setText("QVGA Stream 1")
 		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
 			self.subscriber1 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback1)
@@ -122,7 +122,7 @@ class MyPlugin(Plugin):
 		except:
 			pass
 		if chosen_topic_name == "Choose Topic":
-			self._widget.label_4.setText("QVGA Stream 2")
+			self._widget.label_2.setText("QVGA Stream 2")
 		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
 			self.subscriber2 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback2)
@@ -140,7 +140,7 @@ class MyPlugin(Plugin):
 		except:
 			pass
 		if chosen_topic_name == "Choose Topic":
-			self._widget.label_4.setText("QVGA Stream 3")
+			self._widget.label_3.setText("QVGA Stream 3")
 		elif chosen_topic_name == "RGB-Bild":
 			# topic subscribtions
 			self.subscriber3 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback3)
