@@ -68,11 +68,6 @@ class MyPlugin(Plugin):
 		# Add widget to the user interface
 		context.add_widget(self._widget)
 		
-		# Add Signals to the widget elements
-		master = rosgraph.Master('ni_vision_gui')   
-		self._topic_data_list = master.getPublishedTopics('')
-		self._counter = 0
-		
 		# Used to translate between Ros Image and numpy array		  
 		self._bridge = CvBridge()
 		
@@ -80,6 +75,7 @@ class MyPlugin(Plugin):
 		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0, "maxColorDifference":0,
 									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
 									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
+		self._recognitionParameter = {}
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.trigger1.connect(self.paint1)
@@ -101,6 +97,9 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.comboBox_2, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen2)
 		self.connect(self._widget.comboBox_3, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen3)
 		self.connect(self._widget.comboBox_4, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen4)
+
+
+	### Handle different QVGA streams and related comboboxes ###
 
 	def topic_chosen1(self, chosen_topic_name):
 		# unregister old topics
@@ -174,6 +173,71 @@ class MyPlugin(Plugin):
 			# topic subscribtions
 			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback4)
 	
+	# This function is called everytime a new message arrives, data is the message it receives
+	def callback1(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		if self._widget.comboBox_1.currentIndex() != 1:
+			norm = colors.Normalize(image_data.min(), image_data.max())
+			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
+			image_colors = image_colors[:,:,0:3]
+			self._image1 = (255*image_colors).astype('byte')
+		else: # RGB-Image, no conversion needed
+			self._image1 = image_data
+		self.trigger1.emit(data.data)
+	
+	def callback2(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		if self._widget.comboBox_2.currentIndex() != 1:
+			norm = colors.Normalize(image_data.min(), image_data.max())
+			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
+			image_colors = image_colors[:,:,0:3]
+			self._image2 = (255*image_colors).astype('byte')
+		else: # RGB-Image, no conversion needed
+			self._image2 = image_data
+		self.trigger2.emit(data.data)
+		
+	def callback3(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		if self._widget.comboBox_3.currentIndex() != 1:
+			norm = colors.Normalize(image_data.min(), image_data.max())
+			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
+			image_colors = image_colors[:,:,0:3]
+			self._image3 = (255*image_colors).astype('byte')
+		else: # RGB-Image, no conversion needed
+			self._image3 = image_data
+		self.trigger3.emit(data.data)
+		
+	def callback4(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		if self._widget.comboBox_4.currentIndex() != 1:
+			norm = colors.Normalize(image_data.min(), image_data.max())
+			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
+			image_colors = image_colors[:,:,0:3]
+			self._image4 = (255*image_colors).astype('byte')
+		else: # RGB-Image, no conversion needed
+			self._image4 = image_data
+		self.trigger4.emit(data.data)
+	
+	
+	# paint methods for the four different qvga streams
+	def paint1(self,data):   
+		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
+		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint2(self,data):   
+		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
+		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint3(self,data):   
+		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
+		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
+		
+	def paint4(self,data):   
+		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
+		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
+		
+	
+	
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
 					'/home')
@@ -186,7 +250,10 @@ class MyPlugin(Plugin):
 		self._widget.color_path_label.setText(str(filename))
 		# Todo extract file name from path and use for recognition
 	
-	# show segmentation parameter dialog and connect sliders to slots
+	
+	
+	### Segmentation parameter dialog and connected callback functions ###
+	
 	def showSegmentationParameterDialog(self):
 		self._SPDialog = SegmentationParameterDialog()
 		self._SPDialog.show()
@@ -247,55 +314,14 @@ class MyPlugin(Plugin):
 		self._segmentationParameter["minPixelCount"] = n
         
         
+    ### Recognition parameter dialog and connected callback functions ###   
         
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
 			
 			
-	# This function is called everytime a new message arrives, data is the message it receives
-	def callback1(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		norm = colors.Normalize(image_data.min(), image_data.max())
-		image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-		image_colors = image_colors[:,:,0:3]
-		self._image1 = (255*image_colors).astype('byte')
-		self.trigger1.emit(data.data)
 	
-	def callback2(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		norm = colors.Normalize(image_data.min(), image_data.max())
-		image_colors = cm.jet(norm(image_data[:,:,0])) 
-		image_colors = image_colors[:,:,0:3]
-		self._image2 = (255*image_colors).astype('byte')
-		self.trigger2.emit(data.data)
-		
-	def callback3(self, data):
-		self._image3 = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger3.emit(data.data)
-		
-	def callback4(self, data):
-		self._image4 = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		self.trigger4.emit(data.data)
-	
-	
-	# paint methods for the four different qvga streams
-	def paint1(self,data):   
-		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
-		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint2(self,data):   
-		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
-		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint3(self,data):   
-		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
-		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint4(self,data):   
-		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
-		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
-		
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here

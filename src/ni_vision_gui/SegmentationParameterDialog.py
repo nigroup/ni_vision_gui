@@ -14,6 +14,9 @@ from PyQt4.QtCore import pyqtSignal
 
 from cv_bridge import CvBridge, CvBridgeError
 
+
+# Custom Dialog for the Segmentation parameter of the ni_vision_gui
+
 class SegmentationParameterDialog(QDialog):
 	
 	
