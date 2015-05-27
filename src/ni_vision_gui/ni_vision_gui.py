@@ -257,7 +257,7 @@ class MyPlugin(Plugin):
 	def callback1(self, data):
 		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		norm = colors.Normalize(image_data.min(), image_data.max())
-		image_colors = cm.jet(norm(image_data[:,:,0])) 
+		image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
 		image_colors = image_colors[:,:,0:3]
 		self._image1 = (255*image_colors).astype('byte')
 		self.trigger1.emit(data.data)
