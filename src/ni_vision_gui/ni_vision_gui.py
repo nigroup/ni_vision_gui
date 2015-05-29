@@ -68,7 +68,7 @@ class MyPlugin(Plugin):
 		# Add widget to the user interface
 		context.add_widget(self._widget)
 		
-		# Used to translate between Ros Image and numpy array		  
+		# Used to translate between Ros Image and numpy array		 
 		self._bridge = CvBridge()
 		
 		# Define Segmentation and Recognition Parameter
@@ -98,6 +98,8 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.comboBox_3, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen3)
 		self.connect(self._widget.comboBox_4, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen4)
 
+		# Snapshot-Button
+		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
 
 	### Handle different QVGA streams and related comboboxes ###
 
@@ -250,8 +252,21 @@ class MyPlugin(Plugin):
 		self._widget.color_path_label.setText(str(filename))
 		# Todo extract file name from path and use for recognition
 	
-	
-	
+	# Saves all images from the currently active QVGA-Streams to disk
+	def snapshotTaken(self):
+		path = 'zNiData/Snapshots/'
+		directory = os.path.dirname(path)
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		if self._widget.label_1.pixmap():
+			(self._widget.label_1.pixmap()).save(directory + '/'+ self._widget.comboBox_1.currentText(), self._widget.comboBox.currentText())
+		if self._widget.label_2.pixmap():
+			(self._widget.label_2.pixmap()).save(directory + '/'+ self._widget.comboBox_2.currentText(), self._widget.comboBox.currentText())
+		if self._widget.label_3.pixmap():
+			(self._widget.label_3.pixmap()).save(directory + '/'+ self._widget.comboBox_3.currentText(), self._widget.comboBox.currentText())
+		if self._widget.label_4.pixmap():
+			(self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.comboBox.currentText())
+			
 	### Segmentation parameter dialog and connected callback functions ###
 	
 	def showSegmentationParameterDialog(self):
@@ -312,10 +327,10 @@ class MyPlugin(Plugin):
 	def minPixelCountChanged(self, n):
 		self._widget.label_26.setText(str(n))
 		self._segmentationParameter["minPixelCount"] = n
-        
-        
-    ### Recognition parameter dialog and connected callback functions ###   
-        
+		
+		
+	### Recognition parameter dialog and connected callback functions ###   
+		
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()

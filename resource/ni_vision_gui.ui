@@ -35,7 +35,7 @@
             <item>
              <widget class="QToolBox" name="toolBox">
               <property name="currentIndex">
-               <number>3</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="General">
                <property name="geometry">
@@ -123,17 +123,17 @@
                  <widget class="QComboBox" name="comboBox">
                   <item>
                    <property name="text">
-                    <string>.jpg</string>
+                    <string>jpg</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>.tif</string>
+                    <string>tif</string>
                    </property>
                   </item>
                   <item>
                    <property name="text">
-                    <string>.bmp</string>
+                    <string>bmp</string>
                    </property>
                   </item>
                  </widget>
@@ -544,7 +544,7 @@
       <item row="0" column="1">
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
