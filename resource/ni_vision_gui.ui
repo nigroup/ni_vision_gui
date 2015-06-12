@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1242</width>
+    <width>1378</width>
     <height>964</height>
    </rect>
   </property>
@@ -16,8 +16,8 @@
   <property name="autoFillBackground">
    <bool>false</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
+  <layout class="QVBoxLayout" name="verticalLayout_8">
+   <item>
     <widget class="QWidget" name="widget_2" native="true">
      <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
@@ -42,7 +42,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>460</width>
+                 <width>596</width>
                  <height>704</height>
                 </rect>
                </property>
@@ -152,7 +152,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>460</width>
+                 <width>596</width>
                  <height>704</height>
                 </rect>
                </property>
@@ -320,6 +320,14 @@
                </layout>
               </widget>
               <widget class="QWidget" name="Recognition_Parameter">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>0</y>
+                 <width>596</width>
+                 <height>704</height>
+                </rect>
+               </property>
                <attribute name="label">
                 <string>Recognition Parameter</string>
                </attribute>
@@ -458,7 +466,7 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>460</width>
+                 <width>596</width>
                  <height>704</height>
                 </rect>
                </property>
@@ -548,7 +556,7 @@
         </property>
         <widget class="QWidget" name="tab">
          <attribute name="title">
-          <string>Tab 1</string>
+          <string>QVGA</string>
          </attribute>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="0" column="1">
@@ -791,9 +799,108 @@
         </widget>
         <widget class="QWidget" name="tab_2">
          <attribute name="title">
-          <string>Tab 2</string>
+          <string>SXGA</string>
          </attribute>
-         <layout class="QGridLayout" name="gridLayout_4"/>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QWidget" name="widget_7" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_9">
+             <item>
+              <widget class="QWidget" name="widget_9" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_10">
+                <item>
+                 <widget class="QComboBox" name="comboBox_6"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_48">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="widget_11" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_11">
+                <item>
+                 <widget class="QComboBox" name="comboBox_7"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_49">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+             <item>
+              <widget class="QWidget" name="widget_10" native="true">
+               <layout class="QVBoxLayout" name="verticalLayout_12">
+                <item>
+                 <widget class="QComboBox" name="comboBox_8"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_50">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                  <property name="alignment">
+                   <set>Qt::AlignCenter</set>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QWidget" name="widget_8" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_13">
+             <item>
+              <widget class="QComboBox" name="comboBox_9">
+               <item>
+                <property name="text">
+                 <string>Choose Topic</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>RGB-SXGA</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Recognition</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_51">
+               <property name="text">
+                <string>SXGA Stream</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </widget>
       </item>
