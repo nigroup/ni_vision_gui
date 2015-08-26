@@ -21,7 +21,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 
-
+#from PIL import Image, ImageDraw
 
 class MyPlugin(Plugin):
 	
@@ -30,6 +30,7 @@ class MyPlugin(Plugin):
 	trigger2 = pyqtSignal(str)
 	trigger3 = pyqtSignal(str)
 	trigger4 = pyqtSignal(str)
+	trigger_sxga = pyqtSignal(str)
 
 	def __init__(self, context):
 		super(MyPlugin, self).__init__(context)
@@ -82,6 +83,7 @@ class MyPlugin(Plugin):
 		self.trigger2.connect(self.paint2)
 		self.trigger3.connect(self.paint3)
 		self.trigger4.connect(self.paint4)
+		self.trigger_sxga.connect(self.paint_sxga)
 
 		# topic subscribtions
 		#self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
@@ -97,7 +99,8 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.comboBox_2, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen2)
 		self.connect(self._widget.comboBox_3, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen3)
 		self.connect(self._widget.comboBox_4, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen4)
-
+		self.connect(self._widget.comboBox_sxga, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen_sxga)
+		
 		# Snapshot-Button
 		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
 
@@ -175,7 +178,41 @@ class MyPlugin(Plugin):
 			# topic subscribtions
 			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback4)
 	
+	def topic_chosen_sxga(self, chosen_topic_name):
+		# unregister old topics
+		try:
+			self.subscriber_sxga.unregister()
+		except:
+			pass
+		if chosen_topic_name == "Choose Topic":
+			self._widget.label_sxga.setText("SXGA Stream")
+		elif chosen_topic_name == "RGB-SXGA":
+			# topic subscribtions
+			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
+		elif chosen_topic_name == "Recognition":
+			# topic subscribtions
+			self.subscriber_recog_flag = rospy.Subscriber("", self.callback_recog_flag)
+			self.subscriber_recog_rect = rospy.Subscriber("", self.callback_recog_rect)
+			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
+	
 	# This function is called everytime a new message arrives, data is the message it receives
+	def callback_recog_flag(self, data):
+		# self._recog_flag = data
+		pass
+	
+	def callback_recog_rect(self, data):
+		# self._recog_rect = ...as dictonary
+		pass
+	
+	def callback_sxga(self, data):
+		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		if self._widget.comboBox_sxga.currentIndex() != 1:
+			# todo: draw rectangle in image
+			self._image_sxga = image_data
+		else:
+			self._image_sxga = image_data
+		self.trigger_sxga.emit(data.data)
+	
 	def callback1(self, data):
 		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		if self._widget.comboBox_1.currentIndex() != 1:
@@ -238,7 +275,9 @@ class MyPlugin(Plugin):
 		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
 		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
 		
-	
+	def paint_sxga(self, data):
+		qim = QImage(self._image_sxga, 1280, 960, QImage.Format_RGB888)
+		self._widget.label_sxga.setPixmap( QPixmap.fromImage(qim) );
 	
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
