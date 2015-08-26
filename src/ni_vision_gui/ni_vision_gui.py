@@ -8,8 +8,7 @@ import matplotlib.colors as colors
 from SegmentationParameterDialog import SegmentationParameterDialog
 from RecognitionParameterDialog import RecognitionParameterDialog
 
-
-import cv2
+from cv2 import rectangle
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
@@ -206,8 +205,13 @@ class MyPlugin(Plugin):
 	
 	def callback_sxga(self, data):
 		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		
 		if self._widget.comboBox_sxga.currentIndex() != 1:
 			# todo: draw rectangle in image
+			# if self._recog_flag: # area searched and found
+			#	rectangle(image_data, (10,10), (50,50), (255,0,0))
+			# else: # area search, but not found
+			#	rectangle(image_data, (10,10), (50,50), (0,255,255))
 			self._image_sxga = image_data
 		else:
 			self._image_sxga = image_data
