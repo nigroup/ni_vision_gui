@@ -105,7 +105,10 @@ class MyPlugin(Plugin):
 		# Snapshot-Button
 		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
 
-	### Handle different QVGA streams and related comboboxes ###
+
+
+
+	##### Methods that are called if comboboxes of a frame has changed #####
 
 	def topic_chosen1(self, chosen_topic_name):
 		# unregister old topics
@@ -196,7 +199,9 @@ class MyPlugin(Plugin):
 			self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callback_recog_rect)
 			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
 	
-	# This function is called everytime a new message arrives, data is the message it receives
+	
+	
+	###### This functions are called everytime a new message arrives, data is the message it receives #####
 	def callback_recog_flag(self, data):
 		self._recog_flag = data
 	
@@ -262,7 +267,8 @@ class MyPlugin(Plugin):
 		self.trigger4.emit(data.data)
 	
 	
-	# paint methods for the four different qvga streams
+	
+	##### These methods are called every time a frame needs to be repainted #####
 	def paint1(self,data):   
 		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
 		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
@@ -284,6 +290,8 @@ class MyPlugin(Plugin):
 		qim = QImage(self._image_sxga, 320, 240, QImage.Format_RGB888)
 		self._widget.label_sxga.setPixmap( QPixmap.fromImage(qim) );
 	
+	
+	##### FileDialogs #####
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
 					'/home')
