@@ -19,7 +19,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
-
+from std_msgs.msg import Bool, Int32MultiArray
 #from PIL import Image, ImageDraw
 
 class MyPlugin(Plugin):
@@ -76,6 +76,8 @@ class MyPlugin(Plugin):
 									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
 									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
 		self._recognitionParameter = {}
+		self._recog_flag = True
+		self._recog_data = np.zeros(4)
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.trigger1.connect(self.paint1)
@@ -190,28 +192,26 @@ class MyPlugin(Plugin):
 			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
 		elif chosen_topic_name == "Recognition":
 			# topic subscribtions
-			self.subscriber_recog_flag = rospy.Subscriber("", self.callback_recog_flag)
-			self.subscriber_recog_rect = rospy.Subscriber("", self.callback_recog_rect)
+			self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callback_recog_flag)
+			self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callback_recog_rect)
 			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
 	
 	# This function is called everytime a new message arrives, data is the message it receives
 	def callback_recog_flag(self, data):
-		# self._recog_flag = data
-		pass
+		self._recog_flag = data
 	
 	def callback_recog_rect(self, data):
-		# self._recog_rect = ...as dictonary
-		pass
+		self._recog_rect = data.data
 	
 	def callback_sxga(self, data):
 		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		
-		if self._widget.comboBox_sxga.currentIndex() != 1:
-			# todo: draw rectangle in image
-			# if self._recog_flag: # area searched and found
-			#	rectangle(image_data, (10,10), (50,50), (255,0,0))
-			# else: # area search, but not found
-			#	rectangle(image_data, (10,10), (50,50), (0,255,255))
+		if self._widget.comboBox_sxga.currentIndex() != 1: # Recognition mode
+			# draw rectangle in image
+			if self._recog_flag: # area searched and found
+				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (255,0,0))
+			else: # area search, but not found
+				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (0,255,255))
 			self._image_sxga = image_data
 		else:
 			self._image_sxga = image_data
@@ -280,7 +280,8 @@ class MyPlugin(Plugin):
 		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
 		
 	def paint_sxga(self, data):
-		qim = QImage(self._image_sxga, 1280, 960, QImage.Format_RGB888)
+		# SXGA Size 1280, 960
+		qim = QImage(self._image_sxga, 320, 240, QImage.Format_RGB888)
 		self._widget.label_sxga.setPixmap( QPixmap.fromImage(qim) );
 	
 	def showFileDialogSIFT(self):
