@@ -203,7 +203,7 @@ class MyPlugin(Plugin):
 	
 	###### This functions are called everytime a new message arrives, data is the message it receives #####
 	def callback_recog_flag(self, data):
-		self._recog_flag = data
+		self._recog_flag = data.data
 	
 	def callback_recog_rect(self, data):
 		self._recog_rect = data.data
@@ -214,9 +214,9 @@ class MyPlugin(Plugin):
 		if self._widget.comboBox_sxga.currentIndex() != 1: # Recognition mode
 			# draw rectangle in image
 			if self._recog_flag: # area searched and found
-				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (255,0,0))
+				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (0,255,0))
 			else: # area search, but not found
-				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (0,255,255))
+				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (255,0,0))
 			self._image_sxga = image_data
 		else:
 			self._image_sxga = image_data
@@ -224,6 +224,9 @@ class MyPlugin(Plugin):
 	
 	def callback1(self, data):
 		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		image_data[0,0,:] = 0
+		image_data[0,1,:] = 12
+		print(image_data[0,0:2,:], image_data.max()) 
 		if self._widget.comboBox_1.currentIndex() != 1:
 			norm = colors.Normalize(image_data.min(), image_data.max())
 			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
