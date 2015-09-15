@@ -26,12 +26,10 @@ from std_msgs.msg import Bool, Int32MultiArray
 class MyPlugin(Plugin):
 	
 	# Has to be outside of the constructor, signal also transmits an image in raw data format
-	trigger1 = pyqtSignal(str)
-	trigger2 = pyqtSignal(str)
-	trigger3 = pyqtSignal(str)
-	trigger4 = pyqtSignal(str)
+	rgbPaintSignal = pyqtSignal(np.ndarray)
 	segmentationPaintSignal = pyqtSignal(np.ndarray)
-	trigger_sxga = pyqtSignal(str)
+	trackingPaintSignal = pyqtSignal(np.ndarray)
+	recognitionPaintSignal = pyqtSignal(np.ndarray)
 
 	def __init__(self, context):
 		super(MyPlugin, self).__init__(context)
@@ -82,12 +80,11 @@ class MyPlugin(Plugin):
 		self._recog_data = np.zeros(4)
 		
 		# Slot for updating gui, since the callback function has its own thread
-		self.trigger1.connect(self.paint1)
-		self.trigger2.connect(self.paint2)
-		self.trigger3.connect(self.paint3)
-		self.trigger4.connect(self.paint4)
+		self.rgbPaintSignal.connect(self.paintrgb)
 		self.segmentationPaintSignal.connect(self.paintSegmentation)
-		self.trigger_sxga.connect(self.paint_sxga)
+		self.trackingPaintSignal.connect(self.paintTracking)
+		self.recognitionPaintSignal.connect(self.paintRecognition)
+	
 
 		# topic subscribtions
 		#self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
@@ -116,14 +113,25 @@ class MyPlugin(Plugin):
 	##### Methods that are called if comboboxes of a frame has changed #####
 
 	# RGB-Image
-	
+	def showrgb(self):
+		self.subscriberSegmentation = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackrgb)
+		self._rgbDialog = NormalWindow()
+		self._rgbDialog.show()
+			
+	def callbackrgb(self, data):
+		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		self.rgbPaintSignal.emit(img)
+
+	def paintrgb(self, img):
+		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
+		self._rgbDialog.label.setPixmap(QPixmap.fromImage(qim))
+
 
 	# Segmentation
-	
 	def showSegmentation(self):
-		self.subscriberSegmentation = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackSegmentation)
-		self._SegmentationDialog = NormalWindow()
-		self._SegmentationDialog.show()
+		self.subscriberSegmentation = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callbackSegmentation)
+		self._segmentationDialog = NormalWindow()
+		self._segmentationDialog.show()
 			
 	def callbackSegmentation(self, data):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
@@ -131,195 +139,70 @@ class MyPlugin(Plugin):
 
 	def paintSegmentation(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
-		self._SegmentationDialog.label.setPixmap(QPixmap.fromImage(qim))
+		self._segmentationDialog.label.setPixmap(QPixmap.fromImage(qim))
+
 
 	# Tracking
-	
-	# Recognition
-	
+	def showTracking(self):
+		self.subscriberTracking = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
+		self._trackingDialog = NormalWindow()
+		self._trackingDialog.show()
+			
+	def callbackTracking(self, data):
+		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		self.trackingPaintSignal.emit(img)
 
-	def topic_chosen1(self, chosen_topic_name):
-		# unregister old topics
-		try:
-			self.subscriber1.unregister()
-		except:
-			pass
-		if chosen_topic_name == "Choose Topic":
-			self._widget.label_1.setText("QVGA Stream 1")
-		elif chosen_topic_name == "RGB-Bild":
-			# topic subscribtions
-			self.subscriber1 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback1)
-		elif chosen_topic_name == "Segmentation":
-			# topic subscribtions
-			self.subscriber1 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback1)
-		elif chosen_topic_name == "Tracking":
-			# topic subscribtions
-			self.subscriber1 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback1)
-	
-	def topic_chosen2(self, chosen_topic_name):
-		# unregister old topics
-		try:
-			self.subscriber2.unregister()
-		except:
-			pass
-		if chosen_topic_name == "Choose Topic":
-			self._widget.label_2.setText("QVGA Stream 2")
-		elif chosen_topic_name == "RGB-Bild":
-			# topic subscribtions
-			self.subscriber2 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback2)
-		elif chosen_topic_name == "Segmentation":
-			# topic subscribtions
-			self.subscriber2 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback2)
-		elif chosen_topic_name == "Tracking":
-			# topic subscribtions
-			self.subscriber2 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback2)
+	def paintTracking(self, img):
+		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
+		self._trackingDialog.label.setPixmap(QPixmap.fromImage(qim))
+		
+		
+	# Recognition
+	def showRecognition(self):
+		self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callbackRecogFlag)
+		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
+		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
+		self._recognitionDialog = NormalWindow()
+		self._recognitionDialog.show()
 			
-	def topic_chosen3(self, chosen_topic_name):
-		# unregister old topics
-		try:
-			self.subscriber3.unregister()
-		except:
-			pass
-		if chosen_topic_name == "Choose Topic":
-			self._widget.label_3.setText("QVGA Stream 3")
-		elif chosen_topic_name == "RGB-Bild":
-			# topic subscribtions
-			self.subscriber3 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback3)
-		elif chosen_topic_name == "Segmentation":
-			# topic subscribtions
-			self.subscriber3 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback3)
-		elif chosen_topic_name == "Tracking":
-			# topic subscribtions
-			self.subscriber3 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback3)
-			
-	def topic_chosen4(self, chosen_topic_name):
-		# unregister old topics
-		try:
-			self.subscriber4.unregister()
-		except:
-			pass
-		if chosen_topic_name == "Choose Topic":
-			self._widget.label_4.setText("QVGA Stream 4")
-		elif chosen_topic_name == "RGB-Bild":
-			# topic subscribtions
-			self.subscriber4 = rospy.Subscriber("camera/rgb/image_color", Image, self.callback4)
-		elif chosen_topic_name == "Segmentation":
-			# topic subscribtions
-			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callback4)
-		elif chosen_topic_name == "Tracking":
-			# topic subscribtions
-			self.subscriber4 = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callback4)
+	def callbackRecognition(self, data):
+		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		# draw rectangle in image
+		if self._recogFlag: # searched and found
+			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0))
+		else: # searched, but not found
+			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0))
+		self.recognitionPaintSignal.emit(img)
 	
-	def topic_chosen_sxga(self, chosen_topic_name):
-		# unregister old topics
-		try:
-			self.subscriber_sxga.unregister()
-		except:
-			pass
-		if chosen_topic_name == "Choose Topic":
-			self._widget.label_sxga.setText("SXGA Stream")
-		elif chosen_topic_name == "RGB-SXGA":
-			# topic subscribtions
-			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
-		elif chosen_topic_name == "Recognition":
-			# topic subscribtions
-			self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callback_recog_flag)
-			self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callback_recog_rect)
-			self.subscriber_sxga = rospy.Subscriber("camera/rgb/image_color", Image, self.callback_sxga)
+	def callback_recog_flag(self, flag):
+		self._recogFlag = flag.data
 	
+	def callback_recog_rect(self, rect):
+		self._recogRect = rect.data
+
+	def paintRecognition(self, img):
+		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
+		self._recognitionDialog.label.setPixmap(QPixmap.fromImage(qim))
+		
+	# self.subscriber1.unregister()
+
 	
 	
 	###### This functions are called everytime a new message arrives, data is the message it receives #####
-	def callback_recog_flag(self, data):
-		self._recog_flag = data.data
-	
-	def callback_recog_rect(self, data):
-		self._recog_rect = data.data
-	
-	def callback_sxga(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		
-		if self._widget.comboBox_sxga.currentIndex() != 1: # Recognition mode
-			# draw rectangle in image
-			if self._recog_flag: # area searched and found
-				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (0,255,0))
-			else: # area search, but not found
-				rectangle(image_data, (self._recog_rect[0],self._recog_rect[1]), (self._recog_rect[2],self._recog_rect[3]), (255,0,0))
-			self._image_sxga = image_data
-		else:
-			self._image_sxga = image_data
-		self.trigger_sxga.emit(data.data)
-	
-	def callback1(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		image_data[0,0,:] = 0
-		image_data[0,1,:] = 12
-		print(image_data[0,0:2,:], image_data.max()) 
-		if self._widget.comboBox_1.currentIndex() != 1:
-			norm = colors.Normalize(image_data.min(), image_data.max())
-			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-			image_colors = image_colors[:,:,0:3]
-			self._image1 = (255*image_colors).astype('byte')
-		else: # RGB-Image, no conversion needed
-			self._image1 = image_data
-		self.trigger1.emit(data.data)
-	
-	def callback2(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		if self._widget.comboBox_2.currentIndex() != 1:
-			norm = colors.Normalize(image_data.min(), image_data.max())
-			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-			image_colors = image_colors[:,:,0:3]
-			self._image2 = (255*image_colors).astype('byte')
-		else: # RGB-Image, no conversion needed
-			self._image2 = image_data
-		self.trigger2.emit(data.data)
-		
-	def callback3(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		if self._widget.comboBox_3.currentIndex() != 1:
-			norm = colors.Normalize(image_data.min(), image_data.max())
-			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-			image_colors = image_colors[:,:,0:3]
-			self._image3 = (255*image_colors).astype('byte')
-		else: # RGB-Image, no conversion needed
-			self._image3 = image_data
-		self.trigger3.emit(data.data)
-		
-	def callback4(self, data):
-		image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		if self._widget.comboBox_4.currentIndex() != 1:
-			norm = colors.Normalize(image_data.min(), image_data.max())
-			image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-			image_colors = image_colors[:,:,0:3]
-			self._image4 = (255*image_colors).astype('byte')
-		else: # RGB-Image, no conversion needed
-			self._image4 = image_data
-		self.trigger4.emit(data.data)
-	
-	
-	
-	##### These methods are called every time a frame needs to be repainted #####
-	def paint1(self,data):   
-		qim = QImage(self._image1,320,240,QImage.Format_RGB888)
-		self._widget.label_1.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint2(self,data):   
-		qim = QImage(self._image2,320,240,QImage.Format_RGB888)
-		self._widget.label_2.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint3(self,data):   
-		qim = QImage(self._image3,320,240,QImage.Format_RGB888)
-		self._widget.label_3.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint4(self,data):   
-		qim = QImage(self._image4,320,240,QImage.Format_RGB888)
-		self._widget.label_4.setPixmap( QPixmap.fromImage(qim) );
-		
-	def paint_sxga(self, data):
-		# SXGA Size 1280, 960
-		qim = QImage(self._image_sxga, 640, 480, QImage.Format_RGB888)
-		self._widget.label_sxga.setPixmap( QPixmap.fromImage(qim) );
+
+	#~ def callback1(self, data):
+		#~ image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		#~ image_data[0,0,:] = 0
+		#~ image_data[0,1,:] = 12
+		#~ print(image_data[0,0:2,:], image_data.max()) 
+		#~ if self._widget.comboBox_1.currentIndex() != 1:
+			#~ norm = colors.Normalize(image_data.min(), image_data.max())
+			#~ image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
+			#~ image_colors = image_colors[:,:,0:3]
+			#~ self._image1 = (255*image_colors).astype('byte')
+		#~ else: # RGB-Image, no conversion needed
+			#~ self._image1 = image_data
+		#~ self.trigger1.emit(data.data)
 	
 	
 	##### FileDialogs #####
