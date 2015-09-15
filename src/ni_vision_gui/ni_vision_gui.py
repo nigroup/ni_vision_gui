@@ -7,8 +7,9 @@ import matplotlib.cm as cm
 import matplotlib.colors as colors
 from SegmentationParameterDialog import SegmentationParameterDialog
 from RecognitionParameterDialog import RecognitionParameterDialog
+from NormalWindow import NormalWindow
 
-from cv2 import rectangle
+from cv2 import rectangle, imshow, namedWindow, waitKey
 
 from qt_gui.plugin import Plugin
 from python_qt_binding import loadUi
@@ -29,6 +30,7 @@ class MyPlugin(Plugin):
 	trigger2 = pyqtSignal(str)
 	trigger3 = pyqtSignal(str)
 	trigger4 = pyqtSignal(str)
+	segmentationPaintSignal = pyqtSignal(np.ndarray)
 	trigger_sxga = pyqtSignal(str)
 
 	def __init__(self, context):
@@ -84,6 +86,7 @@ class MyPlugin(Plugin):
 		self.trigger2.connect(self.paint2)
 		self.trigger3.connect(self.paint3)
 		self.trigger4.connect(self.paint4)
+		self.segmentationPaintSignal.connect(self.paintSegmentation)
 		self.trigger_sxga.connect(self.paint_sxga)
 
 		# topic subscribtions
@@ -105,10 +108,35 @@ class MyPlugin(Plugin):
 		# Snapshot-Button
 		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
 
-
-
+		# new events
+		self.connect(self._widget.segmentationButton, SIGNAL('clicked()'), self.showSegmentation)
+		
+		
 
 	##### Methods that are called if comboboxes of a frame has changed #####
+
+	# RGB-Image
+	
+
+	# Segmentation
+	
+	def showSegmentation(self):
+		self.subscriberSegmentation = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackSegmentation)
+		self._SegmentationDialog = NormalWindow()
+		self._SegmentationDialog.show()
+			
+	def callbackSegmentation(self, data):
+		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		self.segmentationPaintSignal.emit(img)
+
+	def paintSegmentation(self, img):
+		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
+		self._SegmentationDialog.label.setPixmap(QPixmap.fromImage(qim))
+
+	# Tracking
+	
+	# Recognition
+	
 
 	def topic_chosen1(self, chosen_topic_name):
 		# unregister old topics
@@ -290,7 +318,7 @@ class MyPlugin(Plugin):
 		
 	def paint_sxga(self, data):
 		# SXGA Size 1280, 960
-		qim = QImage(self._image_sxga, 320, 240, QImage.Format_RGB888)
+		qim = QImage(self._image_sxga, 640, 480, QImage.Format_RGB888)
 		self._widget.label_sxga.setPixmap( QPixmap.fromImage(qim) );
 	
 	
