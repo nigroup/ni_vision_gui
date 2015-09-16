@@ -113,6 +113,7 @@ class MyPlugin(Plugin):
 	def showrgb(self):
 		self.subscriberSegmentation = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackrgb)
 		self._rgbDialog = NormalWindow()
+		self._rgbDialog.setWindowTitle('RGB-Stream')
 		self._rgbDialog.show()
 			
 	def callbackrgb(self, data):
@@ -128,6 +129,7 @@ class MyPlugin(Plugin):
 	def showSegmentation(self):
 		self.subscriberSegmentation = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callbackSegmentation)
 		self._segmentationDialog = NormalWindow()
+		self._segmentationDialog.setWindowTitle('Segmentation')
 		self._segmentationDialog.show()
 			
 	def callbackSegmentation(self, data):
@@ -144,6 +146,7 @@ class MyPlugin(Plugin):
 	def showTracking(self):
 		self.subscriberTracking = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
 		self._trackingDialog = NormalWindow()
+		self._trackingDialog.setWindowTitle('Tracking')
 		self._trackingDialog.show()
 			
 	def callbackTracking(self, data):
@@ -165,6 +168,7 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
 		self._recognitionDialog = NormalWindow()
+		self._recognitionDialog.setWindowTitle('Recognition')
 		self._recognitionDialog.show()
 			
 	def callbackRecognition(self, data):
@@ -176,10 +180,10 @@ class MyPlugin(Plugin):
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0))
 		self.recognitionPaintSignal.emit(img)
 	
-	def callback_recog_flag(self, flag):
+	def callbackRecogFlag(self, flag):
 		self._recogFlag = flag.data
 	
-	def callback_recog_rect(self, rect):
+	def callbackRecogRect(self, rect):
 		self._recogRect = rect.data
 
 	def paintRecognition(self, img):
