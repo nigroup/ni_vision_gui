@@ -95,18 +95,15 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.pushButton_3, SIGNAL('clicked()'), self.showRecognitionParameterDialog)
 		self.connect(self._widget.pushButton_4, SIGNAL('clicked()'), self.showSegmentationParameterDialog)
 		
-		# Topic in Combobox was chosen
-		self.connect(self._widget.comboBox_1, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen1)
-		self.connect(self._widget.comboBox_2, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen2)
-		self.connect(self._widget.comboBox_3, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen3)
-		self.connect(self._widget.comboBox_4, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen4)
-		self.connect(self._widget.comboBox_sxga, SIGNAL('currentIndexChanged(QString)'), self.topic_chosen_sxga)
 		
 		# Snapshot-Button
 		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
 
 		# new events
+		self.connect(self._widget.rgbButton, SIGNAL('clicked()'), self.showrgb)
 		self.connect(self._widget.segmentationButton, SIGNAL('clicked()'), self.showSegmentation)
+		self.connect(self._widget.trackingButton, SIGNAL('clicked()'), self.showTracking)
+		self.connect(self._widget.recognitionButton, SIGNAL('clicked()'), self.showRecognition)
 		
 		
 
@@ -135,6 +132,7 @@ class MyPlugin(Plugin):
 			
 	def callbackSegmentation(self, data):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		img = self.applyColorMap(img)
 		self.segmentationPaintSignal.emit(img)
 
 	def paintSegmentation(self, img):
@@ -150,6 +148,10 @@ class MyPlugin(Plugin):
 			
 	def callbackTracking(self, data):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
+		img[0,0,:] = 0 # enforcing the hole bandwidth of the color map
+		img[0,1,:] = 12
+		img = self.applyColorMap(img)
+		#print(img[0,0:2,:], img.max()) 
 		self.trackingPaintSignal.emit(img)
 
 	def paintTracking(self, img):
@@ -203,7 +205,17 @@ class MyPlugin(Plugin):
 		#~ else: # RGB-Image, no conversion needed
 			#~ self._image1 = image_data
 		#~ self.trigger1.emit(data.data)
-	
+	def applyColorMap(self, img):
+		"""
+		Converts grey-scale image in rgb-image by using a color map
+		Input: grey-scale image
+		Output: rgb-image
+		"""
+		norm = colors.Normalize(img.min(), img.max())
+		image_colors = cm.gist_ncar(norm(img[:,:,0])) 
+		image_colors = image_colors[:,:,0:3]
+		img = (255*image_colors).astype('byte')
+		return img
 	
 	##### FileDialogs #####
 	def showFileDialogSIFT(self):
