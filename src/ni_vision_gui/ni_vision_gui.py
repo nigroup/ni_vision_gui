@@ -166,6 +166,8 @@ class MyPlugin(Plugin):
 	def showRecognition(self):
 		self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callbackRecogFlag)
 		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
+		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Int32MultiArray, self.callbackKeypoints)
+		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Int32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
 		self._recognitionDialog = NormalWindow()
 		self._recognitionDialog.setWindowTitle('Recognition')
@@ -178,6 +180,12 @@ class MyPlugin(Plugin):
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0))
 		else: # searched, but not found
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0))
+		# draw SIFT-feature in image
+		for i in range(self._keypoints.length):
+			if self._matchedKeypoints[i]:
+				rectangle(img, (self._keypoints[i][0]-2, self._keypoints[i][1]-2), (self._keypoints[i][0]+2, self._keypoints[i][1]+2), (0,0,255))
+			else:
+				rectangle(img, (self._keypoints[i][0]-2, self._keypoints[i][1]-2), (self._keypoints[i][0]+2, self._keypoints[i][1]+2), (255,255,255))
 		self.recognitionPaintSignal.emit(img)
 	
 	def callbackRecogFlag(self, flag):
@@ -185,6 +193,12 @@ class MyPlugin(Plugin):
 	
 	def callbackRecogRect(self, rect):
 		self._recogRect = rect.data
+
+	def callbackKeypoints(self, keypoints):
+		self._keypoints = keypoints.data
+		
+	def callbackMatchedKeypoints(self, matchedKeypoints):
+		self._matchedKeypoints = matcheKeypoints.data
 
 	def paintRecognition(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
