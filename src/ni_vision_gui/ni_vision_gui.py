@@ -179,16 +179,18 @@ class MyPlugin(Plugin):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		# draw rectangle in image
 		if self._recogFlag: # searched and found
-			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0))
+			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0), thickness = 3)
 		else: # searched, but not found
-			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0))
+			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0), thickness = 3)
 		# draw SIFT-feature in image
 
 		for i in range(self._keypoints.size / 2):
 			if self._matchedKeypoints[i]:
-				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
+				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2),
+				         (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
 			else:
-				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (255,255,255))
+				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), 
+				         (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (255,255,255))
 		self.recognitionPaintSignal.emit(img)
 	
 	def callbackRecogFlag(self, flag):
