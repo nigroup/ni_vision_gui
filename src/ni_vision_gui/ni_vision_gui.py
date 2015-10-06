@@ -20,7 +20,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
-from std_msgs.msg import Bool, Int32MultiArray
+from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray
 #from PIL import Image, ImageDraw
 
 class MyPlugin(Plugin):
@@ -78,6 +78,8 @@ class MyPlugin(Plugin):
 		self._recognitionParameter = {}
 		self._recog_flag = True
 		self._recog_data = np.zeros(4)
+		self._keypoints = {}
+		self._matchedKeypoints = {}
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.rgbPaintSignal.connect(self.paintrgb)
@@ -107,7 +109,7 @@ class MyPlugin(Plugin):
 		
 		
 
-	##### Methods that are called if comboboxes of a frame has changed #####
+	#### When buttons are clicked....
 
 	# RGB-Image
 	def showrgb(self):
@@ -166,8 +168,8 @@ class MyPlugin(Plugin):
 	def showRecognition(self):
 		self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callbackRecogFlag)
 		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
-		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Int32MultiArray, self.callbackKeypoints)
-		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Int32MultiArray, self.callbackMatchedKeypoints)
+		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
+		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
 		self._recognitionDialog = NormalWindow()
 		self._recognitionDialog.setWindowTitle('Recognition')
@@ -181,11 +183,12 @@ class MyPlugin(Plugin):
 		else: # searched, but not found
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0))
 		# draw SIFT-feature in image
-		for i in range(self._keypoints.length):
+
+		for i in range(self._keypoints.size / 2):
 			if self._matchedKeypoints[i]:
-				rectangle(img, (self._keypoints[i][0]-2, self._keypoints[i][1]-2), (self._keypoints[i][0]+2, self._keypoints[i][1]+2), (0,0,255))
+				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
 			else:
-				rectangle(img, (self._keypoints[i][0]-2, self._keypoints[i][1]-2), (self._keypoints[i][0]+2, self._keypoints[i][1]+2), (255,255,255))
+				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (255,255,255))
 		self.recognitionPaintSignal.emit(img)
 	
 	def callbackRecogFlag(self, flag):
@@ -195,10 +198,10 @@ class MyPlugin(Plugin):
 		self._recogRect = rect.data
 
 	def callbackKeypoints(self, keypoints):
-		self._keypoints = keypoints.data
+		self._keypoints = np.asarray(keypoints.data).reshape((len(keypoints.data) / 2, 2))
 		
 	def callbackMatchedKeypoints(self, matchedKeypoints):
-		self._matchedKeypoints = matcheKeypoints.data
+		self._matchedKeypoints = matchedKeypoints.data
 
 	def paintRecognition(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
