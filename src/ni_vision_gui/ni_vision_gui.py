@@ -76,10 +76,13 @@ class MyPlugin(Plugin):
 									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
 									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
 		self._recognitionParameter = {}
-		self._recog_flag = True
-		self._recog_data = np.zeros(4)
-		self._keypoints = {}
-		self._matchedKeypoints = {}
+		self._recogFlag = True
+		self._recogData = np.zeros(4)
+		self._recogRect = np.zeros(4)
+		self._keypoints = np.eye(0)
+		self._matchedKeypoints = np.eye(0)
+		
+		self._showSiftFeature = True
 		
 		# Slot for updating gui, since the callback function has its own thread
 		self.rgbPaintSignal.connect(self.paintrgb)
@@ -181,17 +184,20 @@ class MyPlugin(Plugin):
 		if self._recogFlag: # searched and found
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0), thickness = 3)
 		else: # searched, but not found
-			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,0,0), thickness = 3)
+			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,255,0), thickness = 2)
 		# draw SIFT-feature in image
-
-		for i in range(self._keypoints.size / 2):
-			if self._matchedKeypoints[i]:
-				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2),
-				         (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
-			else:
-				rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), 
-				         (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (255,255,255))
+		
+		if self._showSiftFeature:
+			for i in range(self._keypoints.size / 2):
+				if self._matchedKeypoints[i]:
+					rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2),
+							 (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
+				else:
+					rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2), 
+							 (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (255,255,255))
 		self.recognitionPaintSignal.emit(img)
+		self._keypoints = np.eye(0)
+		self._matchedKeypoints = np.eye(0)
 	
 	def callbackRecogFlag(self, flag):
 		self._recogFlag = flag.data
@@ -335,9 +341,13 @@ class MyPlugin(Plugin):
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
+		self.connect(self._RPDialog.showSiftFeatureComboBox, SIGNAL('currentIndexChanged(QString)'), self.showSiftFeatureModeChanged)
 			
-			
-	
+	def showSiftFeatureModeChanged(self,n):
+		if n == "True":
+			self._showSiftFeature = True
+		else:
+			self._showSiftFeature = False
 		
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
