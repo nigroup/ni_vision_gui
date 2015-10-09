@@ -79,10 +79,11 @@ class MyPlugin(Plugin):
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
 		self._recogRect = np.zeros(4).astype(int)
+		print(type(self._recogRect))
 		self._keypoints = np.eye(0)
 		self._matchedKeypoints = np.eye(0)
 		self._boundingBoxes = np.eye(0)
-		self._recognizedSurfaceIDs = {}
+		self._recognizedSurfaceIDs = []
 		
 		self._showSiftFeature = True
 		
@@ -167,6 +168,7 @@ class MyPlugin(Plugin):
 
 	def callbackBoundingBoxes(self, boundingBoxes):
 		self._boundingBoxes = np.asarray(boundingBoxes.data).reshape((len(boundingBoxes.data) / 5, 5))
+		print(self._boundingBoxes)
 
 	def paintTracking(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
@@ -176,7 +178,7 @@ class MyPlugin(Plugin):
 	# Recognition
 	def showRecognition(self):
 		self.subscriber_recog_flag = rospy.Subscriber("/ni/depth_segmentation/recognition/found", Bool, self.callbackRecogFlag)
-		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
+		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Float32MultiArray,self.callbackRecogRect)
 		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/recognizedIndex", Float32, self.callbackRecognizedID)
@@ -194,6 +196,9 @@ class MyPlugin(Plugin):
 			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,255,0), thickness = 2)
 		# draw SIFT-feature in image
 		
+		#~ for i in self._recognizedSurfaceIDs:
+			#~ rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0), thickness = 3)
+		
 		if self._showSiftFeature:
 			for i in range(self._keypoints.size / 2):
 				if self._matchedKeypoints[i]:
@@ -210,7 +215,7 @@ class MyPlugin(Plugin):
 		self._recogFlag = flag.data
 	
 	def callbackRecogRect(self, rect):
-		self._recogRect = rect.data.astype(int)
+		self._recogRect = np.asarray(rect.data).astype(int)
 		
 	def callbackRecognizedID(self, ID):
 		self._recognizedSurfaceIDs.append(ID.data)
