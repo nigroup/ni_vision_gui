@@ -167,6 +167,7 @@ class MyPlugin(Plugin):
 		self.trackingPaintSignal.emit(img)
 
 	def callbackBoundingBoxes(self, boundingBoxes):
+		print("Hello world")
 		self._boundingBoxes = np.asarray(boundingBoxes.data).reshape((len(boundingBoxes.data) / 5, 5))
 		print(self._boundingBoxes)
 
