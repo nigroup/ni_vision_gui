@@ -20,7 +20,7 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
-from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray
+from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32
 #from PIL import Image, ImageDraw
 
 class MyPlugin(Plugin):
@@ -78,9 +78,11 @@ class MyPlugin(Plugin):
 		self._recognitionParameter = {}
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
-		self._recogRect = np.zeros(4)
+		self._recogRect = np.zeros(4).astype(int)
 		self._keypoints = np.eye(0)
 		self._matchedKeypoints = np.eye(0)
+		self._boundingBoxes = np.eye(0)
+		self._recognizedSurfaceIDs = {}
 		
 		self._showSiftFeature = True
 		
@@ -150,6 +152,7 @@ class MyPlugin(Plugin):
 	# Tracking
 	def showTracking(self):
 		self.subscriberTracking = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
+		self.subscriberBoundingBoxes = rospy.Subscriber("ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._trackingDialog = NormalWindow()
 		self._trackingDialog.setWindowTitle('Tracking')
 		self._trackingDialog.show()
@@ -162,6 +165,9 @@ class MyPlugin(Plugin):
 		#print(img[0,0:2,:], img.max()) 
 		self.trackingPaintSignal.emit(img)
 
+	def callbackBoundingBoxes(self, boundingBoxes):
+		self._boundingBoxes = np.asarray(boundingBoxes.data).reshape((len(boundingBoxes.data) / 5, 5))
+
 	def paintTracking(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
 		self._trackingDialog.label.setPixmap(QPixmap.fromImage(qim))
@@ -173,6 +179,7 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Int32MultiArray,self.callbackRecogRect)
 		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
+		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/recognizedIndex", Float32, self.callbackRecognizedID)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
 		self._recognitionDialog = NormalWindow()
 		self._recognitionDialog.setWindowTitle('Recognition')
@@ -203,7 +210,10 @@ class MyPlugin(Plugin):
 		self._recogFlag = flag.data
 	
 	def callbackRecogRect(self, rect):
-		self._recogRect = rect.data
+		self._recogRect = rect.data.astype(int)
+		
+	def callbackRecognizedID(self, ID):
+		self._recognizedSurfaceIDs.append(ID.data)
 
 	def callbackKeypoints(self, keypoints):
 		self._keypoints = np.asarray(keypoints.data).reshape((len(keypoints.data) / 2, 2))
