@@ -79,7 +79,6 @@ class MyPlugin(Plugin):
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
 		self._recogRect = np.zeros(4).astype(int)
-		print(type(self._recogRect))
 		self._keypoints = np.eye(0)
 		self._matchedKeypoints = np.eye(0)
 		self._boundingBoxes = np.eye(0)
@@ -153,7 +152,6 @@ class MyPlugin(Plugin):
 	# Tracking
 	def showTracking(self):
 		self.subscriberTracking = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
-		self.subscriberBoundingBoxes = rospy.Subscriber("ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._trackingDialog = NormalWindow()
 		self._trackingDialog.setWindowTitle('Tracking')
 		self._trackingDialog.show()
@@ -165,11 +163,6 @@ class MyPlugin(Plugin):
 		img = self.applyColorMap(img)
 		#print(img[0,0:2,:], img.max()) 
 		self.trackingPaintSignal.emit(img)
-
-	def callbackBoundingBoxes(self, boundingBoxes):
-		print("Hello world")
-		self._boundingBoxes = np.asarray(boundingBoxes.data).reshape((len(boundingBoxes.data) / 5, 5))
-		print(self._boundingBoxes)
 
 	def paintTracking(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
@@ -184,22 +177,29 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/recognizedIndex", Float32, self.callbackRecognizedID)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
+		self.subscriberBoundingBoxes = rospy.Subscriber("ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._recognitionDialog = NormalWindow()
 		self._recognitionDialog.setWindowTitle('Recognition')
 		self._recognitionDialog.show()
 			
 	def callbackRecognition(self, data):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		# draw rectangle in image
-		if self._recogFlag: # searched and found
-			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0), thickness = 3)
-		else: # searched, but not found
-			rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,255,0), thickness = 2)
+		
+		
+		
+		# draw bounding boxes around all recognized surfaces
+		for i in self._recognizedSurfaceIDs:
+			if i in list(self._boundingBoxes[:,4]):
+				tmp = self._boundingBoxes[list(self._boundingBoxes[:,4]).index(i),:4]
+				rectangle(img, (tmp[0],tmp[1]), (tmp[2],tmp[3]), (0,255,0), thickness = 3)
+			else:
+				print("Index not found")
+				self._recognizedSurfaceIDs.remove(i)
+				
+		# draw rectangle around currently searched region
+		rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,255,0), thickness = 2)
+		
 		# draw SIFT-feature in image
-		
-		#~ for i in self._recognizedSurfaceIDs:
-			#~ rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (0,255,0), thickness = 3)
-		
 		if self._showSiftFeature:
 			for i in range(self._keypoints.size / 2):
 				if self._matchedKeypoints[i]:
@@ -215,11 +215,16 @@ class MyPlugin(Plugin):
 	def callbackRecogFlag(self, flag):
 		self._recogFlag = flag.data
 	
+	def callbackBoundingBoxes(self, boundingBoxes):
+		self._boundingBoxes = np.asarray(boundingBoxes.data).reshape((len(boundingBoxes.data) / 5, 5)).astype(int)
+	
 	def callbackRecogRect(self, rect):
 		self._recogRect = np.asarray(rect.data).astype(int)
 		
 	def callbackRecognizedID(self, ID):
-		self._recognizedSurfaceIDs.append(ID.data)
+		if ID.data not in self._recognizedSurfaceIDs:
+			self._recognizedSurfaceIDs.append(ID.data)
+		print(self._recognizedSurfaceIDs)
 
 	def callbackKeypoints(self, keypoints):
 		self._keypoints = np.asarray(keypoints.data).reshape((len(keypoints.data) / 2, 2))
