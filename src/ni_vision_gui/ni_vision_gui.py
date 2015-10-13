@@ -83,6 +83,7 @@ class MyPlugin(Plugin):
 		self._matchedKeypoints = np.eye(0)
 		self._boundingBoxes = np.eye(0)
 		self._recognizedSurfaceIDs = []
+		self._examinedSurfaceID = 0
 		
 		self._showSiftFeature = True
 		
@@ -175,7 +176,7 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_rect = rospy.Subscriber("/ni/depth_segmentation/recognition/rect", Float32MultiArray,self.callbackRecogRect)
 		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
-		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/recognizedIndex", Float32, self.callbackRecognizedID)
+		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/examinedIndex", Float32, self.callbackExaminedID)
 		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
 		self.subscriberBoundingBoxes = rospy.Subscriber("ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._recognitionDialog = NormalWindow()
@@ -186,7 +187,14 @@ class MyPlugin(Plugin):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		
 		
-		
+		if not self._matchFlag:
+			if self._examinedSurfaceID in self._recognizedSurfaceIDs:
+				self._recognizedSurfaceIDs.remove(self._examinedSurfaceID)
+		else:
+			if self._examinedSurfaceID not in self._recognizedSurfaceIDs:
+				self._recognizedSurfaceIDs.append(self._examinedSurfaceID)
+				
+		#print(self._boundingBoxes)
 		# draw bounding boxes around all recognized surfaces
 		for i in self._recognizedSurfaceIDs:
 			if i in list(self._boundingBoxes[:,4]):
@@ -196,6 +204,10 @@ class MyPlugin(Plugin):
 				print("Index not found")
 				self._recognizedSurfaceIDs.remove(i)
 				
+		if ID.data not in self._recognizedSurfaceIDs:
+			self._recognizedSurfaceIDs.append(ID.data)
+	
+		
 		# draw rectangle around currently searched region
 		rectangle(img, (self._recogRect[0],self._recogRect[1]), (self._recogRect[2],self._recogRect[3]), (255,255,0), thickness = 2)
 		
@@ -221,10 +233,9 @@ class MyPlugin(Plugin):
 	def callbackRecogRect(self, rect):
 		self._recogRect = np.asarray(rect.data).astype(int)
 		
-	def callbackRecognizedID(self, ID):
-		if ID.data not in self._recognizedSurfaceIDs:
-			self._recognizedSurfaceIDs.append(ID.data)
-		print(self._recognizedSurfaceIDs)
+	def callbackExaminedID(self, ID):
+		self._examinedSurfaceID = ID.data
+		
 
 	def callbackKeypoints(self, keypoints):
 		self._keypoints = np.asarray(keypoints.data).reshape((len(keypoints.data) / 2, 2))
