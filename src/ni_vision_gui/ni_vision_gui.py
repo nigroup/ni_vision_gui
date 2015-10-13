@@ -187,7 +187,7 @@ class MyPlugin(Plugin):
 		img = self._bridge.imgmsg_to_cv2(data, "rgb8")
 		
 		
-		if not self._matchFlag:
+		if not self._recogFlag:
 			if self._examinedSurfaceID in self._recognizedSurfaceIDs:
 				self._recognizedSurfaceIDs.remove(self._examinedSurfaceID)
 		else:
@@ -204,8 +204,6 @@ class MyPlugin(Plugin):
 				print("Index not found")
 				self._recognizedSurfaceIDs.remove(i)
 				
-		if ID.data not in self._recognizedSurfaceIDs:
-			self._recognizedSurfaceIDs.append(ID.data)
 	
 		
 		# draw rectangle around currently searched region
