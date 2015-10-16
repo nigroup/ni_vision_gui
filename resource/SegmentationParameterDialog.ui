@@ -46,7 +46,7 @@
       <item>
        <widget class="QSlider" name="maxPositionDifferenceSlider">
         <property name="maximum">
-         <number>1</number>
+         <number>100</number>
         </property>
         <property name="pageStep">
          <number>1</number>
@@ -60,10 +60,16 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
        </widget>
       </item>
       <item>
        <widget class="QSlider" name="maxColorDifferenceSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -71,6 +77,9 @@
       </item>
       <item>
        <widget class="QSlider" name="maxSizeDifferenceSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -78,6 +87,9 @@
       </item>
       <item>
        <widget class="QSlider" name="positionFactorSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -85,6 +97,9 @@
       </item>
       <item>
        <widget class="QSlider" name="colorFactorSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -92,6 +107,9 @@
       </item>
       <item>
        <widget class="QSlider" name="sizeFactorSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -99,6 +117,9 @@
       </item>
       <item>
        <widget class="QSlider" name="maxTotalDifferenceSlider">
+        <property name="maximum">
+         <number>300</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -106,6 +127,9 @@
       </item>
       <item>
        <widget class="QSlider" name="upperSizeLimitSlider">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -113,13 +137,19 @@
       </item>
       <item>
        <widget class="QSlider" name="lowerSizeLimitSlider">
+        <property name="maximum">
+         <number>1000</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="minimumPixelCountSlider">
+       <widget class="QSlider" name="minPixelCountSlider">
+        <property name="maximum">
+         <number>500</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

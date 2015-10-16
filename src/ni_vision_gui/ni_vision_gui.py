@@ -1,4 +1,5 @@
 import os
+import copy
 import rospy
 import rospkg
 import rosgraph
@@ -72,7 +73,7 @@ class MyPlugin(Plugin):
 		self._bridge = CvBridge()
 		
 		# Define Segmentation and Recognition Parameter
-		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0.1, "maxColorDifference":0.3,
+		self._segmentationParameter = {"trackingMode":"Mode 1", "maxPositionDifference":0.1, "maxColorDifference":0.3,
 									   "maxSizeDifference":0.3, "positionFactor":0.1, "colorFactor":0.5, "sizeFactor":0.4,
 									   "maxTotalDifference":1.6, "upperSizeLimit":550, "lowerSizeLimit":100, "minPixelCount":200}
 		self._recognitionParameter = {"selectionMode":"Mode 1", "colorDistanceThreshold":0.5, "siftScales":3, "siftInitSigma":1.6,
@@ -80,8 +81,8 @@ class MyPlugin(Plugin):
 									  "printColorDistance":False, "showSiftFeature":True}
 		
 		# Create additional dictonaries in case of reset
-		self._recognitionParameterReset = self._recognitionParameter
-		self._segmentationParameterReset = self._segmentationParameter
+		self._recognitionParameterReset = copy.deepcopy(self._recognitionParameter)
+		self._segmentationParameterReset = copy.deepcopy(self._segmentationParameter)
 		
 		
 		
@@ -315,67 +316,92 @@ class MyPlugin(Plugin):
 		if self._widget.label_4.pixmap():
 			(self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.comboBox.currentText())
 			
+			
 	### Segmentation parameter dialog and connected callback functions ###
 	def initializeSegmentationParameter(self):
-		self._widget.label_10.setText(str(self._segmentationParameter["maxPositionDifference"]))
+		self._widget.trackingModeLabel.setText(str(self._segmentationParameter["trackingMode"]))
+		self._widget.maxPositionDifferenceLabel.setText(str(self._segmentationParameter["maxPositionDifference"]))
+		self._widget.maxColorDifferenceLabel.setText(str(self._segmentationParameter["maxColorDifference"]))
+		self._widget.maxSizeDifferenceLabel.setText(str(self._segmentationParameter["maxSizeDifference"]))
+		self._widget.positionFactorLabel.setText(str(self._segmentationParameter["positionFactor"]))
+		self._widget.colorFactorLabel.setText(str(self._segmentationParameter["colorFactor"]))
+		self._widget.sizeFactorLabel.setText(str(self._segmentationParameter["sizeFactor"]))
+		self._widget.maxTotalDifferenceLabel.setText(str(self._segmentationParameter["maxTotalDifference"]))
+		self._widget.upperSizeLimitLabel.setText(str(self._segmentationParameter["upperSizeLimit"]))
+		self._widget.lowerSizeLimitLabel.setText(str(self._segmentationParameter["lowerSizeLimit"]))
+		self._widget.minPixelCountLabel.setText(str(self._segmentationParameter["minPixelCount"]))
+				
 		
 	def showSegmentationParameterDialog(self):
 		self._SPDialog = SegmentationParameterDialog()
 		self._SPDialog.show()
-		self.connect(self._SPDialog.comboBox, SIGNAL('currentIndexChanged(QString)'), self.trackingModeChanged)
-		self.connect(self._SPDialog.horizontalSlider_1, SIGNAL('valueChanged(int)'), self.maxPositionDifferenceChanged)
-		self.connect(self._SPDialog.horizontalSlider_2, SIGNAL('valueChanged(int)'), self.maxColorDifferenceChanged)
-		self.connect(self._SPDialog.horizontalSlider_3, SIGNAL('valueChanged(int)'), self.maxSizeDifferenceChanged)
-		self.connect(self._SPDialog.horizontalSlider_4, SIGNAL('valueChanged(int)'), self.positionFactorChanged)
-		self.connect(self._SPDialog.horizontalSlider_5, SIGNAL('valueChanged(int)'), self.colorFactorChanged)
-		self.connect(self._SPDialog.horizontalSlider_6, SIGNAL('valueChanged(int)'), self.sizeFactorChanged)
-		self.connect(self._SPDialog.horizontalSlider_7, SIGNAL('valueChanged(int)'), self.maxTotalDifferenceChanged)
-		self.connect(self._SPDialog.horizontalSlider_8, SIGNAL('valueChanged(int)'), self.upperSizeLimitChanged)
-		self.connect(self._SPDialog.horizontalSlider_9, SIGNAL('valueChanged(int)'), self.lowerSizeLimitChanged)
-		self.connect(self._SPDialog.horizontalSlider_10, SIGNAL('valueChanged(int)'), self.minPixelCountChanged)
+		# set intial values
+		self._SPDialog.trackingModeComboBox.setCurrentIndex(self._SPDialog.trackingModeComboBox.findText(self._segmentationParameter["trackingMode"]))
+		self._SPDialog.maxPositionDifferenceSlider.setValue(100*self._segmentationParameter["maxPositionDifference"])
+		self._SPDialog.maxSizeDifferenceSlider.setValue(100*self._segmentationParameter["maxSizeDifference"])
+		self._SPDialog.maxColorDifferenceSlider.setValue(100*self._segmentationParameter["maxColorDifference"])
+		self._SPDialog.positionFactorSlider.setValue(100*self._segmentationParameter["positionFactor"])
+		self._SPDialog.sizeFactorSlider.setValue(100*self._segmentationParameter["sizeFactor"])
+		self._SPDialog.colorFactorSlider.setValue(100*self._segmentationParameter["colorFactor"])
+		self._SPDialog.maxTotalDifferenceSlider.setValue(100*self._segmentationParameter["maxTotalDifference"])
+		self._SPDialog.upperSizeLimitSlider.setValue(self._segmentationParameter["upperSizeLimit"])
+		self._SPDialog.lowerSizeLimitSlider.setValue(self._segmentationParameter["lowerSizeLimit"])
+		self._SPDialog.minPixelCountSlider.setValue(self._segmentationParameter["minPixelCount"])
+		
+		self.connect(self._SPDialog.trackingModeComboBox, SIGNAL('currentIndexChanged(QString)'), self.trackingModeChanged)
+		self.connect(self._SPDialog.maxPositionDifferenceSlider, SIGNAL('valueChanged(int)'), self.maxPositionDifferenceChanged)
+		self.connect(self._SPDialog.maxColorDifferenceSlider, SIGNAL('valueChanged(int)'), self.maxColorDifferenceChanged)
+		self.connect(self._SPDialog.maxSizeDifferenceSlider, SIGNAL('valueChanged(int)'), self.maxSizeDifferenceChanged)
+		self.connect(self._SPDialog.positionFactorSlider, SIGNAL('valueChanged(int)'), self.positionFactorChanged)
+		self.connect(self._SPDialog.colorFactorSlider, SIGNAL('valueChanged(int)'), self.colorFactorChanged)
+		self.connect(self._SPDialog.sizeFactorSlider, SIGNAL('valueChanged(int)'), self.sizeFactorChanged)
+		self.connect(self._SPDialog.maxTotalDifferenceSlider, SIGNAL('valueChanged(int)'), self.maxTotalDifferenceChanged)
+		self.connect(self._SPDialog.upperSizeLimitSlider, SIGNAL('valueChanged(int)'), self.upperSizeLimitChanged)
+		self.connect(self._SPDialog.lowerSizeLimitSlider, SIGNAL('valueChanged(int)'), self.lowerSizeLimitChanged)
+		self.connect(self._SPDialog.minPixelCountSlider, SIGNAL('valueChanged(int)'), self.minPixelCountChanged)
 
 	def trackingModeChanged(self, mode):
-		self._widget.label_9.setText(mode)
+		self._widget.trackingModeLabel.setText(mode)
 		self._segmentationParameter["trackingMode"] = mode
 		
 	def maxPositionDifferenceChanged(self, n):
-		self._widget.label_10.setText(str(n))
-		self._segmentationParameter["maxPositionDifference"] = n
+		self._widget.maxPositionDifferenceLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["maxPositionDifference"] = float(n) / 100
 		
 	def maxColorDifferenceChanged(self, n):
-		self._widget.label_12.setText(str(n))
-		self._segmentationParameter["maxColorDifference"] = n
+		self._widget.maxColorDifferenceLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["maxColorDifference"] = float(n) / 100
 		
 	def maxSizeDifferenceChanged(self, n):
-		self._widget.label_6.setText(str(n))
-		self._segmentationParameter["maxSizeDifference"] = n
+		self._widget.maxSizeDifferenceLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["maxSizeDifference"] = float(n) / 100
 		
 	def positionFactorChanged(self, n):
-		self._widget.label_7.setText(str(n))
-		self._segmentationParameter["positionFactor"] = n
+		self._widget.positionFactorLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["positionFactor"] = float(n) / 100
 		
 	def colorFactorChanged(self, n):
-		self._widget.label_14.setText(str(n))
-		self._segmentationParameter["colorFactor"] = n
+		self._widget.colorFactorLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["colorFactor"] = float(n) / 100
 		
 	def sizeFactorChanged(self, n):
-		self._widget.label_16.setText(str(n))
-		self._segmentationParameter["sizeFactor"] = n
+		self._widget.sizeFactorLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["sizeFactor"] = float(n) / 100
 		
 	def maxTotalDifferenceChanged(self, n):
-		self._widget.label_23.setText(str(n))
-		self._segmentationParameter["maxTotalDifference"] = n
+		self._widget.maxTotalDifferenceLabel.setText(str(float(n) / 100))
+		self._segmentationParameter["maxTotalDifference"] = float(n) / 100
 		
 	def upperSizeLimitChanged(self, n):
-		self._widget.label_22.setText(str(n))
+		self._widget.upperSizeLimitLabel.setText(str(n))
 		self._segmentationParameter["upperSizeLimit"] = n
 		
 	def lowerSizeLimitChanged(self, n):
-		self._widget.label_24.setText(str(n))
+		self._widget.lowerSizeLimitLabel.setText(str(n))
 		self._segmentationParameter["lowerSizeLimit"] = n
 
 	def minPixelCountChanged(self, n):
-		self._widget.label_26.setText(str(n))
+		self._widget.minPixelCountLabel.setText(str(n))
 		self._segmentationParameter["minPixelCount"] = n
 		
 		
