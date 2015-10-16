@@ -72,9 +72,9 @@ class MyPlugin(Plugin):
 		self._bridge = CvBridge()
 		
 		# Define Segmentation and Recognition Parameter
-		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0, "maxColorDifference":0,
-									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
-									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
+		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0.1, "maxColorDifference":0.3,
+									   "maxSizeDifference":0.3, "positionFactor":0.1, "colorFactor":0.5, "sizeFactor":0.4,
+									   "maxTotalDifference":1.6, "upperSizeLimit":550, "lowerSizeLimit":100, "minPixelCount":200}
 		self._recognitionParameter = {"selectionMode":"Mode 1", "colorDistanceThreshold":0.5, "siftScales":3, "siftInitSigma":1.6,
 									  "siftPeakThrs":0.01,"flannKNN":2, "flannMatchFactor":0.7, "flannMatchCnt":10, 
 									  "printColorDistance":False, "showSiftFeature":True}
