@@ -108,14 +108,14 @@ class MyPlugin(Plugin):
 		#self.subcriber = rospy.Subscriber("/camera/rgb/image_color", Image, self.callback)
 		
 		# Push button click events
-		self.connect(self._widget.pushButton, SIGNAL('clicked()'), self.showFileDialogSIFT)
-		self.connect(self._widget.pushButton_2, SIGNAL('clicked()'), self.showFileDialogColor)
-		self.connect(self._widget.pushButton_3, SIGNAL('clicked()'), self.showRecognitionParameterDialog)
-		self.connect(self._widget.pushButton_4, SIGNAL('clicked()'), self.showSegmentationParameterDialog)
-		
+		self.connect(self._widget.siftModelButton, SIGNAL('clicked()'), self.showFileDialogSIFT)
+		self.connect(self._widget.colorModelButton, SIGNAL('clicked()'), self.showFileDialogColor)
+		self.connect(self._widget.recognitionParameterButton, SIGNAL('clicked()'), self.showRecognitionParameterDialog)
+		self.connect(self._widget.segmentationParameterButton, SIGNAL('clicked()'), self.showSegmentationParameterDialog)
+		self.connect(self._widget.resetButton, SIGNAL('clicked()'), self.resetParameter)
 		
 		# Snapshot-Button
-		self.connect(self._widget.pushButton_7, SIGNAL('clicked()'), self.snapshotTaken)
+		self.connect(self._widget.snapshotButton, SIGNAL('clicked()'), self.snapshotTaken)
 
 		# new events
 		self.connect(self._widget.rgbButton, SIGNAL('clicked()'), self.showrgb)
@@ -317,6 +317,11 @@ class MyPlugin(Plugin):
 		if self._widget.label_4.pixmap():
 			(self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.comboBox.currentText())
 			
+	def resetParameter(self):
+		self._segmentationParameter = copy.deepcopy(self._segmentationParameterReset)
+		self._recognitionParameter = copy.deepcopy(self._recognitionParameterReset)
+		self.initializeRecognitionParameter()
+		self.initializeSegmentationParameter()
 			
 	### Segmentation parameter dialog and connected callback functions ###
 	def initializeSegmentationParameter(self):
