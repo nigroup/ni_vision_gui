@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>471</width>
-    <height>371</height>
+    <height>376</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -27,7 +27,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="selectionModeComboBox">
         <property name="editable">
          <bool>false</bool>
         </property>
@@ -44,7 +44,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider">
+       <widget class="QSlider" name="colorDistanceThresholdSlider">
         <property name="maximum">
          <number>1</number>
         </property>
@@ -63,49 +63,49 @@
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_2">
+       <widget class="QSlider" name="siftScalesSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_4">
+       <widget class="QSlider" name="siftInitSigmaSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_3">
+       <widget class="QSlider" name="siftPeakThresholdSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_5">
+       <widget class="QSlider" name="flannKNNSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_6">
+       <widget class="QSlider" name="flannMatchFactorSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_7">
+       <widget class="QSlider" name="flannMatchCountSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2">
+       <widget class="QComboBox" name="printColorDistanceComboBox">
         <item>
          <property name="text">
           <string>False</string>

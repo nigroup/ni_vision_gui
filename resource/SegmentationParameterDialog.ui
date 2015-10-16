@@ -27,7 +27,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QComboBox" name="comboBox">
+       <widget class="QComboBox" name="trackingModeComboBox">
         <property name="editable">
          <bool>false</bool>
         </property>
@@ -44,7 +44,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_1">
+       <widget class="QSlider" name="maxPositionDifferenceSlider">
         <property name="maximum">
          <number>1</number>
         </property>
@@ -63,63 +63,63 @@
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_2">
+       <widget class="QSlider" name="maxColorDifferenceSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_4">
+       <widget class="QSlider" name="maxSizeDifferenceSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_3">
+       <widget class="QSlider" name="positionFactorSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_5">
+       <widget class="QSlider" name="colorFactorSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_6">
+       <widget class="QSlider" name="sizeFactorSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_7">
+       <widget class="QSlider" name="maxTotalDifferenceSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_8">
+       <widget class="QSlider" name="upperSizeLimitSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_9">
+       <widget class="QSlider" name="lowerSizeLimitSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="horizontalSlider_10">
+       <widget class="QSlider" name="minimumPixelCountSlider">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
