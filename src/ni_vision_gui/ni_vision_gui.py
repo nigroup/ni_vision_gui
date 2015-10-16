@@ -75,7 +75,9 @@ class MyPlugin(Plugin):
 		self._segmentationParameter = {"trackingMode":"addLater", "maxPositionDifference":0, "maxColorDifference":0,
 									   "maxSizeDifference":0, "positionFactor":0, "colorFactor":0, "sizeFactor":0,
 									   "maxTotalDifference":0, "upperSizeLimit":0, "lowerSizeLimit":0, "minPixelCount":0}
-		self._recognitionParameter = {}
+		self._recognitionParameter = {"selectionMode":"Mode 1", "colorDistanceThreshold":0.5, "siftScales":3, "siftInitSigma":1.6,
+									  "siftPeakThrs":0.01,"flannKNN":2, "flannMatchFactor":0.7, "flannMatchCnt":10, 
+									  "printColorDistance":False, "showSiftFeature":True}
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
 		self._recogRect = np.zeros(4).astype(int)
@@ -194,7 +196,8 @@ class MyPlugin(Plugin):
 			if self._examinedSurfaceID not in self._recognizedSurfaceIDs:
 				self._recognizedSurfaceIDs.append(self._examinedSurfaceID)
 				
-		#print(self._boundingBoxes)
+		print(self._boundingBoxes)
+		print(self._recognizedSurfaceIDs)
 		# draw bounding boxes around all recognized surfaces
 		for i in self._recognizedSurfaceIDs:
 			if i in list(self._boundingBoxes[:,4]):
