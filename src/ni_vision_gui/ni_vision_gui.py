@@ -125,6 +125,7 @@ class MyPlugin(Plugin):
 			
 		
 		self.initializeSegmentationParameter()
+		self.initializeRecognitionParameter()
 	#### When buttons are clicked....
 	
 
@@ -406,7 +407,18 @@ class MyPlugin(Plugin):
 		
 		
 	### Recognition parameter dialog and connected callback functions ###   
-		
+	def initializeRecognitionParameter(self):
+		self._widget.selectionModeLabel.setText(str(self._recognitionParameter["selectionMode"]))
+		self._widget.colorDistanceThresholdLabel.setText(str(self._recognitionParameter["colorDistanceThreshold"]))
+		self._widget.siftScalesLabel.setText(str(self._recognitionParameter["siftScales"]))
+		self._widget.siftInitSigmaLabel.setText(str(self._recognitionParameter["siftInitSigma"]))
+		self._widget.siftPeakThresholdLabel.setText(str(self._recognitionParameter["siftPeakThreshold"]))
+		self._widget.flannKnnLabel.setText(str(self._recognitionParameter["flannKnn"]))
+		self._widget.flannMatchFactorLabel.setText(str(self._recognitionParameter["flannMatchFactor"]))
+		self._widget.flannMatchCountLabel.setText(str(self._recognitionParameter["flannMatchCount"]))
+		self._widget.printColorDistanceLabel.setText(str(self._recognitionParameter["printColorDistance"]))
+		self._widget.showSiftFeatureLabel.setText(str(self._recognitionParameter["showSiftFeature"]))
+
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
