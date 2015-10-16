@@ -35,7 +35,7 @@
             <item>
              <widget class="QToolBox" name="toolBox">
               <property name="currentIndex">
-               <number>3</number>
+               <number>1</number>
               </property>
               <widget class="QWidget" name="Streams">
                <property name="geometry">
@@ -97,14 +97,14 @@
                  <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
                 </property>
                 <item row="0" column="0">
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="siftModelButton">
                   <property name="text">
                    <string>SIFT Model</string>
                   </property>
                  </widget>
                 </item>
                 <item row="0" column="1">
-                 <widget class="QPushButton" name="pushButton_2">
+                 <widget class="QPushButton" name="colorModelButton">
                   <property name="text">
                    <string>Color Model</string>
                   </property>
@@ -128,42 +128,42 @@
                  </widget>
                 </item>
                 <item row="2" column="0">
-                 <widget class="QPushButton" name="pushButton_3">
+                 <widget class="QPushButton" name="recognitionParameterButton">
                   <property name="text">
                    <string>Recognition Parameter</string>
                   </property>
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QPushButton" name="pushButton_4">
+                 <widget class="QPushButton" name="segmentationParameterButton">
                   <property name="text">
                    <string>Segmentation Parameter</string>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QPushButton" name="pushButton_5">
+                 <widget class="QPushButton" name="recordTimeButton">
                   <property name="text">
                    <string>Record Time</string>
                   </property>
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QPushButton" name="pushButton_6">
+                 <widget class="QPushButton" name="recordVideoButton">
                   <property name="text">
                    <string>Record Video</string>
                   </property>
                  </widget>
                 </item>
                 <item row="4" column="0">
-                 <widget class="QPushButton" name="pushButton_7">
+                 <widget class="QPushButton" name="snapshotButton">
                   <property name="text">
                    <string>Snapshot</string>
                   </property>
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QComboBox" name="comboBox">
+                 <widget class="QComboBox" name="fileSuffixComboBox">
                   <item>
                    <property name="text">
                     <string>jpg</string>
@@ -182,7 +182,7 @@
                  </widget>
                 </item>
                 <item row="5" column="0">
-                 <widget class="QPushButton" name="pushButton_8">
+                 <widget class="QPushButton" name="resetButton">
                   <property name="text">
                    <string>Reset Parameter</string>
                   </property>

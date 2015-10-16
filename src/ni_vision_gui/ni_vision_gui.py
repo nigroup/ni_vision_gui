@@ -304,18 +304,19 @@ class MyPlugin(Plugin):
 	
 	# Saves all images from the currently active QVGA-Streams to disk
 	def snapshotTaken(self):
-		path = 'zNiData/Snapshots/'
-		directory = os.path.dirname(path)
-		if not os.path.exists(directory):
-			os.makedirs(directory)
-		if self._widget.label_1.pixmap():
-			(self._widget.label_1.pixmap()).save(directory + '/'+ self._widget.comboBox_1.currentText(), self._widget.comboBox.currentText())
-		if self._widget.label_2.pixmap():
-			(self._widget.label_2.pixmap()).save(directory + '/'+ self._widget.comboBox_2.currentText(), self._widget.comboBox.currentText())
-		if self._widget.label_3.pixmap():
-			(self._widget.label_3.pixmap()).save(directory + '/'+ self._widget.comboBox_3.currentText(), self._widget.comboBox.currentText())
-		if self._widget.label_4.pixmap():
-			(self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.comboBox.currentText())
+		#~ path = 'zNiData/Snapshots/'
+		#~ directory = os.path.dirname(path)
+		#~ if not os.path.exists(directory):
+			#~ os.makedirs(directory)
+		#~ if self._widget.label_1.pixmap():
+			#~ (self._widget.label_1.pixmap()).save(directory + '/'+ self._widget.comboBox_1.currentText(), self._widget.fileSuffixComboBox.currentText())
+		#~ if self._widget.label_2.pixmap():
+			#~ (self._widget.label_2.pixmap()).save(directory + '/'+ self._widget.comboBox_2.currentText(), self._widget.fileSuffixComboBox.currentText())
+		#~ if self._widget.label_3.pixmap():
+			#~ (self._widget.label_3.pixmap()).save(directory + '/'+ self._widget.comboBox_3.currentText(), self._widget.fileSuffixComboBox.currentText())
+		#~ if self._widget.label_4.pixmap():
+			#~ (self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.fileSuffixComboBox.currentText())
+		pass
 			
 	def resetParameter(self):
 		self._segmentationParameter = copy.deepcopy(self._segmentationParameterReset)
