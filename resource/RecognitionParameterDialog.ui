@@ -46,7 +46,7 @@
       <item>
        <widget class="QSlider" name="colorDistanceThresholdSlider">
         <property name="maximum">
-         <number>1</number>
+         <number>100</number>
         </property>
         <property name="pageStep">
          <number>1</number>
@@ -64,6 +64,12 @@
       </item>
       <item>
        <widget class="QSlider" name="siftScalesSlider">
+        <property name="maximum">
+         <number>50</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -71,6 +77,9 @@
       </item>
       <item>
        <widget class="QSlider" name="siftInitSigmaSlider">
+        <property name="maximum">
+         <number>200</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -78,13 +87,22 @@
       </item>
       <item>
        <widget class="QSlider" name="siftPeakThresholdSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QSlider" name="flannKNNSlider">
+       <widget class="QSlider" name="flannKnnSlider">
+        <property name="maximum">
+         <number>30</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -92,6 +110,12 @@
       </item>
       <item>
        <widget class="QSlider" name="flannMatchFactorSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -99,6 +123,12 @@
       </item>
       <item>
        <widget class="QSlider" name="flannMatchCountSlider">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+        <property name="pageStep">
+         <number>1</number>
+        </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>

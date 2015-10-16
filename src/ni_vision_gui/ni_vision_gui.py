@@ -77,8 +77,8 @@ class MyPlugin(Plugin):
 									   "maxSizeDifference":0.3, "positionFactor":0.1, "colorFactor":0.5, "sizeFactor":0.4,
 									   "maxTotalDifference":1.6, "upperSizeLimit":550, "lowerSizeLimit":100, "minPixelCount":200}
 		self._recognitionParameter = {"selectionMode":"Mode 1", "colorDistanceThreshold":0.5, "siftScales":3, "siftInitSigma":1.6,
-									  "siftPeakThrs":0.01,"flannKNN":2, "flannMatchFactor":0.7, "flannMatchCnt":10, 
-									  "printColorDistance":False, "showSiftFeature":True}
+									  "siftPeakThreshold":0.01,"flannKnn":2, "flannMatchFactor":0.7, "flannMatchCount":10, 
+									  "printColorDistance":"False", "showSiftFeature":"True"}
 		
 		# Create additional dictonaries in case of reset
 		self._recognitionParameterReset = copy.deepcopy(self._recognitionParameter)
@@ -410,14 +410,71 @@ class MyPlugin(Plugin):
 	def showRecognitionParameterDialog(self):
 		self._RPDialog = RecognitionParameterDialog()
 		self._RPDialog.show()
-		self.connect(self._RPDialog.showSiftFeatureComboBox, SIGNAL('currentIndexChanged(QString)'), self.showSiftFeatureModeChanged)
-			
-	def showSiftFeatureModeChanged(self,n):
-		if n == "True":
-			self._showSiftFeature = True
-		else:
-			self._showSiftFeature = False
 		
+		# initialize recognition parameter
+		self._RPDialog.selectionModeComboBox.setCurrentIndex(self._RPDialog.selectionModeComboBox.findText(self._recognitionParameter["selectionMode"]))
+		self._RPDialog.colorDistanceThresholdSlider.setValue(100*self._recognitionParameter["colorDistanceThreshold"])
+		self._RPDialog.siftScalesSlider.setValue(10*self._recognitionParameter["siftScales"])
+		self._RPDialog.siftInitSigmaSlider.setValue(100*self._recognitionParameter["siftInitSigma"])
+		self._RPDialog.siftPeakThresholdSlider.setValue(1000*self._recognitionParameter["siftPeakThreshold"])
+		self._RPDialog.flannKnnSlider.setValue(10*self._recognitionParameter["flannKnn"])
+		self._RPDialog.flannMatchFactorSlider.setValue(100*self._recognitionParameter["flannMatchFactor"])
+		self._RPDialog.flannMatchCountSlider.setValue(self._recognitionParameter["flannMatchCount"])
+		self._RPDialog.printColorDistanceComboBox.setCurrentIndex(self._RPDialog.printColorDistanceComboBox.findText(self._recognitionParameter["printColorDistance"]))
+		self._RPDialog.showSiftFeatureComboBox.setCurrentIndex(self._RPDialog.showSiftFeatureComboBox.findText(self._recognitionParameter["showSiftFeature"]))
+		
+		self.connect(self._RPDialog.selectionModeComboBox, SIGNAL('currentIndexChanged(QString)'), self.selectionModeChanged)
+		self.connect(self._RPDialog.colorDistanceThresholdSlider, SIGNAL('valueChanged(int)'), self.colorDistanceThresholdChanged)
+		self.connect(self._RPDialog.siftScalesSlider, SIGNAL('valueChanged(int)'), self.siftScalesChanged)
+		self.connect(self._RPDialog.siftInitSigmaSlider, SIGNAL('valueChanged(int)'), self.siftInitSigmaChanged)
+		self.connect(self._RPDialog.siftPeakThresholdSlider, SIGNAL('valueChanged(int)'), self.siftPeakThresholdChanged)
+		self.connect(self._RPDialog.flannKnnSlider, SIGNAL('valueChanged(int)'), self.flannKnnChanged)
+		self.connect(self._RPDialog.flannMatchFactorSlider, SIGNAL('valueChanged(int)'), self.flannMatchFactorChanged)
+		self.connect(self._RPDialog.flannMatchCountSlider, SIGNAL('valueChanged(int)'), self.flannMatchCountChanged)
+		self.connect(self._RPDialog.printColorDistanceComboBox, SIGNAL('currentIndexChanged(QString)'), self.printColorDistanceChanged)
+		self.connect(self._RPDialog.showSiftFeatureComboBox, SIGNAL('currentIndexChanged(QString)'), self.showSiftFeatureModeChanged)
+		
+	def selectionModeChanged(self, mode):
+		self._widget.selectionModeLabel.setText(mode)
+		self._recognitionParameter["selectionMode"] = mode
+	
+	def colorDistanceThresholdChanged(self, n):
+		self._widget.colorDistanceThresholdLabel.setText(str(float(n) / 100))
+		self._recognitionParameter["colorDistanceThreshold"] = float(n) / 100
+		
+	def siftScalesChanged(self, n):
+		self._widget.siftScalesLabel.setText(str(float(n) / 10))
+		self._recognitionParameter["siftScales"] = float(n) / 10
+		
+	def siftInitSigmaChanged(self, n):
+		self._widget.siftInitSigmaLabel.setText(str(float(n) / 100))
+		self._recognitionParameter["siftInitSigma"] = float(n) / 100
+		
+	def siftPeakThresholdChanged(self, n):
+		self._widget.siftPeakThresholdLabel.setText(str(float(n) / 1000))
+		self._recognitionParameter["siftPeakThreshold"] = float(n) / 1000
+		
+	def flannKnnChanged(self, n):
+		self._widget.flannKnnLabel.setText(str(float(n) / 10))
+		self._recognitionParameter["flannKnn"] = float(n) / 10
+		
+	def flannMatchFactorChanged(self, n):
+		self._widget.flannMatchFactorLabel.setText(str(float(n) / 100))
+		self._recognitionParameter["flannMatchFactor"] = float(n) / 100
+		
+	def flannMatchCountChanged(self, n):
+		self._widget.flannMatchCountLabel.setText(str(n))
+		self._recognitionParameter["flannMatchCount"] = n
+		
+	def printColorDistanceChanged(self, mode):
+		self._widget.printColorDistanceLabel.setText(mode)
+		self._recognitionParameter["printColorDistance"] = mode
+		
+	def showSiftFeatureModeChanged(self, mode):
+		self._widget.showSiftFeatureLabel.setText(mode)
+		self._recognitionParameter["showSiftFeature"] = mode	
+	
+	
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
 		pass
