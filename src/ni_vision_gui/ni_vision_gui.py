@@ -78,6 +78,13 @@ class MyPlugin(Plugin):
 		self._recognitionParameter = {"selectionMode":"Mode 1", "colorDistanceThreshold":0.5, "siftScales":3, "siftInitSigma":1.6,
 									  "siftPeakThrs":0.01,"flannKNN":2, "flannMatchFactor":0.7, "flannMatchCnt":10, 
 									  "printColorDistance":False, "showSiftFeature":True}
+		
+		# Create additional dictonaries in case of reset
+		self._recognitionParameterReset = self._recognitionParameter
+		self._segmentationParameterReset = self._segmentationParameter
+		
+		
+		
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
 		self._recogRect = np.zeros(4).astype(int)
@@ -114,10 +121,11 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.segmentationButton, SIGNAL('clicked()'), self.showSegmentation)
 		self.connect(self._widget.trackingButton, SIGNAL('clicked()'), self.showTracking)
 		self.connect(self._widget.recognitionButton, SIGNAL('clicked()'), self.showRecognition)
+			
 		
-		
-
+		self.initializeSegmentationParameter()
 	#### When buttons are clicked....
+	
 
 	# RGB-Image
 	def showrgb(self):
@@ -308,7 +316,9 @@ class MyPlugin(Plugin):
 			(self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.comboBox.currentText())
 			
 	### Segmentation parameter dialog and connected callback functions ###
-	
+	def initializeSegmentationParameter(self):
+		self._widget.label_10.setText(str(self._segmentationParameter["maxPositionDifference"]))
+		
 	def showSegmentationParameterDialog(self):
 		self._SPDialog = SegmentationParameterDialog()
 		self._SPDialog.show()

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>255</width>
-    <height>472</height>
+    <width>403</width>
+    <height>593</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,7 +35,7 @@
             <item>
              <widget class="QToolBox" name="toolBox">
               <property name="currentIndex">
-               <number>0</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="Streams">
                <property name="geometry">
@@ -195,8 +195,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>253</width>
-                 <height>277</height>
+                 <width>331</width>
+                 <height>302</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -214,7 +214,7 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QLabel" name="label_10">
+                 <widget class="QLabel" name="maxPositionDifferenceLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -228,7 +228,7 @@
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QLabel" name="label_12">
+                 <widget class="QLabel" name="maxColorDifferenceLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -249,14 +249,14 @@
                  </widget>
                 </item>
                 <item row="5" column="1">
-                 <widget class="QLabel" name="label_6">
+                 <widget class="QLabel" name="maxSizeDifferenceLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
                  </widget>
                 </item>
                 <item row="6" column="1">
-                 <widget class="QLabel" name="label_7">
+                 <widget class="QLabel" name="positionFactorLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -270,7 +270,7 @@
                  </widget>
                 </item>
                 <item row="7" column="1">
-                 <widget class="QLabel" name="label_14">
+                 <widget class="QLabel" name="colorFactorLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -284,7 +284,7 @@
                  </widget>
                 </item>
                 <item row="8" column="1">
-                 <widget class="QLabel" name="label_16">
+                 <widget class="QLabel" name="sizeFactorLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -312,21 +312,21 @@
                  </widget>
                 </item>
                 <item row="10" column="1">
-                 <widget class="QLabel" name="label_22">
+                 <widget class="QLabel" name="upperSizeLimitLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
                  </widget>
                 </item>
                 <item row="9" column="1">
-                 <widget class="QLabel" name="label_23">
+                 <widget class="QLabel" name="maxTotalDifferenceLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
                  </widget>
                 </item>
                 <item row="11" column="1">
-                 <widget class="QLabel" name="label_24">
+                 <widget class="QLabel" name="lowerSizeLimitLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -340,7 +340,7 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QLabel" name="label_9">
+                 <widget class="QLabel" name="trackingModeLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -354,7 +354,7 @@
                  </widget>
                 </item>
                 <item row="12" column="1">
-                 <widget class="QLabel" name="label_26">
+                 <widget class="QLabel" name="minPixelCountLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -367,8 +367,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>384</width>
-                 <height>212</height>
+                 <width>331</width>
+                 <height>302</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -385,25 +385,6 @@
                   </property>
                  </widget>
                 </item>
-                <item row="0" column="1">
-                 <widget class="QComboBox" name="comboBox_5">
-                  <item>
-                   <property name="text">
-                    <string>Histogram Similiarity</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Size constraint - random</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>Random</string>
-                   </property>
-                  </item>
-                 </widget>
-                </item>
                 <item row="2" column="0">
                  <widget class="QLabel" name="label_29">
                   <property name="text">
@@ -412,7 +393,7 @@
                  </widget>
                 </item>
                 <item row="2" column="1">
-                 <widget class="QLabel" name="label_30">
+                 <widget class="QLabel" name="colorDistanceThresholdLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -426,7 +407,7 @@
                  </widget>
                 </item>
                 <item row="3" column="1">
-                 <widget class="QLabel" name="label_32">
+                 <widget class="QLabel" name="siftScalesLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -440,7 +421,7 @@
                  </widget>
                 </item>
                 <item row="4" column="1">
-                 <widget class="QLabel" name="label_34">
+                 <widget class="QLabel" name="siftInitSigmaLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -454,7 +435,7 @@
                  </widget>
                 </item>
                 <item row="5" column="1">
-                 <widget class="QLabel" name="label_36">
+                 <widget class="QLabel" name="siftPeakThresholdLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -468,7 +449,7 @@
                  </widget>
                 </item>
                 <item row="6" column="1">
-                 <widget class="QLabel" name="label_38">
+                 <widget class="QLabel" name="flannKnnLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -482,7 +463,7 @@
                  </widget>
                 </item>
                 <item row="7" column="1">
-                 <widget class="QLabel" name="label_40">
+                 <widget class="QLabel" name="flannMatchFactorLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
@@ -496,7 +477,14 @@
                  </widget>
                 </item>
                 <item row="8" column="1">
-                 <widget class="QLabel" name="label_42">
+                 <widget class="QLabel" name="flannMatchCntLabel">
+                  <property name="text">
+                   <string>TextLabel</string>
+                  </property>
+                 </widget>
+                </item>
+                <item row="0" column="1">
+                 <widget class="QLabel" name="selectionModeLabel">
                   <property name="text">
                    <string>TextLabel</string>
                   </property>
