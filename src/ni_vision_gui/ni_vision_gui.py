@@ -22,7 +22,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32, String
-
+from ni_vision_gui.msg import Parameter
 
 class MyPlugin(Plugin):
 	
@@ -127,7 +127,7 @@ class MyPlugin(Plugin):
 		self.initializeSegmentationParameter()
 		self.initializeRecognitionParameter()
 		
-		self._pub = rospy.Publisher('parameter', String, queue_size = 10)
+		self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', String, queue_size = 10)
 	#### When buttons are clicked....
 	
 
