@@ -22,7 +22,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32, String
-from ni_vision_gui.msg import Parameter
+#from ni_vision_gui.msg import Parameter
 
 class MyPlugin(Plugin):
 	
@@ -83,7 +83,8 @@ class MyPlugin(Plugin):
 		# Create additional dictonaries in case of reset
 		self._recognitionParameterReset = copy.deepcopy(self._recognitionParameter)
 		self._segmentationParameterReset = copy.deepcopy(self._segmentationParameter)
-		
+		self._siftModelPath = ""
+		self._colorModelPath = ""
 		
 		
 		self._recogFlag = True
@@ -127,7 +128,7 @@ class MyPlugin(Plugin):
 		self.initializeSegmentationParameter()
 		self.initializeRecognitionParameter()
 		
-		self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', String, queue_size = 10)
+		#self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', Parameter, queue_size = 10)
 	#### When buttons are clicked....
 	
 
@@ -328,11 +329,32 @@ class MyPlugin(Plugin):
 			
 	# publish new parameter to the rest of the system
 	def publishParameterInfo(self,i):
-		hello_str = "hello world " + str(i)
-		rospy.loginfo(hello_str)
-		self._pub.publish(hello_str)
-		print(hello_str)
-			
+		msg = Parameter()
+		msg.siftModel = self._siftModelPath
+		msg.colorModel = self._colorModelPath
+		msg.trackingMode = self._segmentationParameter["trackingMode"]
+		msg.maxPositionDifference = self._segmentationParameter["maxPositionDifference"]
+		msg.maxColorDifference = self._segmentationParameter["maxColorDifference"]
+		msg.maxSizeDifference = self._segmentationParameter["maxSizeDifference"]
+		msg.positionFactor = self._segmentationParameter["positionFactor"]
+		msg.colorFactor = self._segmentationParameter["colorFactor"]
+		msg.sizeFactor = self._segmentationParameter["sizeFactor"]
+		msg.maxTotalDifference = self._segmentationParameter["maxTotalDifference"]
+		msg.upperSizeLimit = self._segmentationParameter["upperSizeLimit"]
+		msg.lowerSizeLimit = self._segmentationParameter["lowerSizeLimit"]
+		msg.minPixelCount = self._segmentationParameter["minPixelCount"]
+		msg.selectionMode = self._recognitionParameter["selectionMode"]
+		msg.colorDistanceThreshold = self._recognitionParameter["colorDistanceThreshold"]
+		msg.siftScales = self._recognitionParameter["siftScales"]
+		msg.siftInitSigma = self._recognitionParameter["siftInitSigma"]
+		msg.siftPeakThreshold = self._recognitionParameter["siftPeakThreshold"]
+		msg.flannKnn = self._recognitionParameter["flannKnn"]
+		msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
+		msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
+		rospy.loginfo(msg)
+		self._pub.publish(msg)
+
+		
 	### Segmentation parameter dialog and connected callback functions ###
 	def initializeSegmentationParameter(self):
 		self._widget.trackingModeLabel.setText(str(self._segmentationParameter["trackingMode"]))
