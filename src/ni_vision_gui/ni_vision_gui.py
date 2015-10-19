@@ -21,8 +21,8 @@ from cv_bridge import CvBridge, CvBridgeError
 
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
-from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32
-#from PIL import Image, ImageDraw
+from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32, String
+
 
 class MyPlugin(Plugin):
 	
@@ -126,6 +126,8 @@ class MyPlugin(Plugin):
 		
 		self.initializeSegmentationParameter()
 		self.initializeRecognitionParameter()
+		
+		self._pub = rospy.Publisher('parameter', String, queue_size = 10)
 	#### When buttons are clicked....
 	
 
@@ -324,6 +326,13 @@ class MyPlugin(Plugin):
 		self.initializeRecognitionParameter()
 		self.initializeSegmentationParameter()
 			
+	# publish new parameter to the rest of the system
+	def publishParameterInfo(self,i):
+		hello_str = "hello world " + str(i)
+		rospy.loginfo(hello_str)
+		self._pub.publish(hello_str)
+		print(hello_str)
+			
 	### Segmentation parameter dialog and connected callback functions ###
 	def initializeSegmentationParameter(self):
 		self._widget.trackingModeLabel.setText(str(self._segmentationParameter["trackingMode"]))
@@ -374,6 +383,7 @@ class MyPlugin(Plugin):
 	def maxPositionDifferenceChanged(self, n):
 		self._widget.maxPositionDifferenceLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["maxPositionDifference"] = float(n) / 100
+		self.publishParameterInfo(n/100)
 		
 	def maxColorDifferenceChanged(self, n):
 		self._widget.maxColorDifferenceLabel.setText(str(float(n) / 100))
