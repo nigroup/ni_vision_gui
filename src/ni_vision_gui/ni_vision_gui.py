@@ -22,7 +22,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32, String
-#from ni_vision_gui.msg import Parameter
+from rqt_gui.msg import Parameter
 
 class MyPlugin(Plugin):
 	
