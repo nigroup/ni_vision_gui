@@ -292,18 +292,20 @@ class MyPlugin(Plugin):
 		img = (255*image_colors).astype('byte')
 		return img
 	
-	##### FileDialogs #####
+	# FileDialogs
 	def showFileDialogSIFT(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
 					'/home')
-		self._widget.SIFT_path_label.setText(str(filename))
-		# Todo extract file name from path and use for recognition
+		self._widget.SIFT_path_label.setText(filename[0].split("/")[-1])
+		self._siftModelPath = filename[0]
+		self.publishParameterInfo()
 	
 	def showFileDialogColor(self):
 		filename = QFileDialog.getOpenFileName(self._widget, 'Open file',
 					'/home')
-		self._widget.color_path_label.setText(str(filename))
-		# Todo extract file name from path and use for recognition
+		self._widget.color_path_label.setText(filename[0].split("/")[-1])
+		self._colorModelPath = filename[0]
+		self.publishParameterInfo()
 	
 	# Saves all images from the currently active QVGA-Streams to disk
 	def snapshotTaken(self):
@@ -537,12 +539,10 @@ class MyPlugin(Plugin):
 	def printColorDistanceChanged(self, mode):
 		self._widget.printColorDistanceLabel.setText(mode)
 		self._recognitionParameter["printColorDistance"] = mode
-		self.publishParameterInfo()
 		
 	def showSiftFeatureModeChanged(self, mode):
 		self._widget.showSiftFeatureLabel.setText(mode)
 		self._recognitionParameter["showSiftFeature"] = mode	
-		self.publishParameterInfo()
 	
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
