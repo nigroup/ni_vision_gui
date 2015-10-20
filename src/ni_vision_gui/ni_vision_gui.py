@@ -328,30 +328,29 @@ class MyPlugin(Plugin):
 		self.initializeSegmentationParameter()
 			
 	# publish new parameter to the rest of the system
-	def publishParameterInfo(self,i):
+	def publishParameterInfo(self):
 		msg = Parameter()
-		#~ msg.siftModel = self._siftModelPath
-		#~ msg.colorModel = self._colorModelPath
-		#~ msg.trackingMode = self._segmentationParameter["trackingMode"]
+		msg.siftModel = self._siftModelPath
+		msg.colorModel = self._colorModelPath
+		msg.trackingMode = self._segmentationParameter["trackingMode"]
 		msg.maxPositionDifference = self._segmentationParameter["maxPositionDifference"]
-		#~ msg.maxColorDifference = self._segmentationParameter["maxColorDifference"]
-		#~ msg.maxSizeDifference = self._segmentationParameter["maxSizeDifference"]
-		#~ msg.positionFactor = self._segmentationParameter["positionFactor"]
-		#~ msg.colorFactor = self._segmentationParameter["colorFactor"]
-		#~ msg.sizeFactor = self._segmentationParameter["sizeFactor"]
-		#~ msg.maxTotalDifference = self._segmentationParameter["maxTotalDifference"]
-		#~ msg.upperSizeLimit = self._segmentationParameter["upperSizeLimit"]
-		#~ msg.lowerSizeLimit = self._segmentationParameter["lowerSizeLimit"]
-		#~ msg.minPixelCount = self._segmentationParameter["minPixelCount"]
-		#~ msg.selectionMode = self._recognitionParameter["selectionMode"]
-		#~ msg.colorDistanceThreshold = self._recognitionParameter["colorDistanceThreshold"]
-		#~ msg.siftScales = self._recognitionParameter["siftScales"]
-		#~ msg.siftInitSigma = self._recognitionParameter["siftInitSigma"]
-		#~ msg.siftPeakThreshold = self._recognitionParameter["siftPeakThreshold"]
-		#~ msg.flannKnn = self._recognitionParameter["flannKnn"]
-		#~ msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
-		#~ msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
-		print("ppppppppppp")
+		msg.maxColorDifference = self._segmentationParameter["maxColorDifference"]
+		msg.maxSizeDifference = self._segmentationParameter["maxSizeDifference"]
+		msg.positionFactor = self._segmentationParameter["positionFactor"]
+		msg.colorFactor = self._segmentationParameter["colorFactor"]
+		msg.sizeFactor = self._segmentationParameter["sizeFactor"]
+		msg.maxTotalDifference = self._segmentationParameter["maxTotalDifference"]
+		msg.upperSizeLimit = self._segmentationParameter["upperSizeLimit"]
+		msg.lowerSizeLimit = self._segmentationParameter["lowerSizeLimit"]
+		msg.minPixelCount = self._segmentationParameter["minPixelCount"]
+		msg.selectionMode = self._recognitionParameter["selectionMode"]
+		msg.colorDistanceThreshold = self._recognitionParameter["colorDistanceThreshold"]
+		msg.siftScales = self._recognitionParameter["siftScales"]
+		msg.siftInitSigma = self._recognitionParameter["siftInitSigma"]
+		msg.siftPeakThreshold = self._recognitionParameter["siftPeakThreshold"]
+		msg.flannKnn = self._recognitionParameter["flannKnn"]
+		msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
+		msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
 		rospy.loginfo(msg)
 		self._pub.publish(msg)
 
@@ -402,47 +401,57 @@ class MyPlugin(Plugin):
 	def trackingModeChanged(self, mode):
 		self._widget.trackingModeLabel.setText(mode)
 		self._segmentationParameter["trackingMode"] = mode
+		self.publishParameterInfo()
 		
 	def maxPositionDifferenceChanged(self, n):
 		self._widget.maxPositionDifferenceLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["maxPositionDifference"] = float(n) / 100
-		self.publishParameterInfo(n/100)
+		self.publishParameterInfo()
 		
 	def maxColorDifferenceChanged(self, n):
 		self._widget.maxColorDifferenceLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["maxColorDifference"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def maxSizeDifferenceChanged(self, n):
 		self._widget.maxSizeDifferenceLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["maxSizeDifference"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def positionFactorChanged(self, n):
 		self._widget.positionFactorLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["positionFactor"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def colorFactorChanged(self, n):
 		self._widget.colorFactorLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["colorFactor"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def sizeFactorChanged(self, n):
 		self._widget.sizeFactorLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["sizeFactor"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def maxTotalDifferenceChanged(self, n):
 		self._widget.maxTotalDifferenceLabel.setText(str(float(n) / 100))
 		self._segmentationParameter["maxTotalDifference"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def upperSizeLimitChanged(self, n):
 		self._widget.upperSizeLimitLabel.setText(str(n))
 		self._segmentationParameter["upperSizeLimit"] = n
+		self.publishParameterInfo()
 		
 	def lowerSizeLimitChanged(self, n):
 		self._widget.lowerSizeLimitLabel.setText(str(n))
 		self._segmentationParameter["lowerSizeLimit"] = n
-
+		self.publishParameterInfo()
+		
 	def minPixelCountChanged(self, n):
 		self._widget.minPixelCountLabel.setText(str(n))
 		self._segmentationParameter["minPixelCount"] = n
+		self.publishParameterInfo()
 		
 		
 	### Recognition parameter dialog and connected callback functions ###   
@@ -488,43 +497,52 @@ class MyPlugin(Plugin):
 	def selectionModeChanged(self, mode):
 		self._widget.selectionModeLabel.setText(mode)
 		self._recognitionParameter["selectionMode"] = mode
-	
+		self.publishParameterInfo()
+		
 	def colorDistanceThresholdChanged(self, n):
 		self._widget.colorDistanceThresholdLabel.setText(str(float(n) / 100))
 		self._recognitionParameter["colorDistanceThreshold"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def siftScalesChanged(self, n):
 		self._widget.siftScalesLabel.setText(str(float(n) / 10))
 		self._recognitionParameter["siftScales"] = float(n) / 10
+		self.publishParameterInfo()
 		
 	def siftInitSigmaChanged(self, n):
 		self._widget.siftInitSigmaLabel.setText(str(float(n) / 100))
 		self._recognitionParameter["siftInitSigma"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def siftPeakThresholdChanged(self, n):
 		self._widget.siftPeakThresholdLabel.setText(str(float(n) / 1000))
 		self._recognitionParameter["siftPeakThreshold"] = float(n) / 1000
+		self.publishParameterInfo()
 		
 	def flannKnnChanged(self, n):
 		self._widget.flannKnnLabel.setText(str(float(n) / 10))
 		self._recognitionParameter["flannKnn"] = float(n) / 10
+		self.publishParameterInfo()
 		
 	def flannMatchFactorChanged(self, n):
 		self._widget.flannMatchFactorLabel.setText(str(float(n) / 100))
 		self._recognitionParameter["flannMatchFactor"] = float(n) / 100
+		self.publishParameterInfo()
 		
 	def flannMatchCountChanged(self, n):
 		self._widget.flannMatchCountLabel.setText(str(n))
 		self._recognitionParameter["flannMatchCount"] = n
+		self.publishParameterInfo()
 		
 	def printColorDistanceChanged(self, mode):
 		self._widget.printColorDistanceLabel.setText(mode)
 		self._recognitionParameter["printColorDistance"] = mode
+		self.publishParameterInfo()
 		
 	def showSiftFeatureModeChanged(self, mode):
 		self._widget.showSiftFeatureLabel.setText(mode)
 		self._recognitionParameter["showSiftFeature"] = mode	
-	
+		self.publishParameterInfo()
 	
 	def shutdown_plugin(self):
 		# TODO unregister all publishers here
