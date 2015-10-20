@@ -274,13 +274,20 @@ class MyPlugin(Plugin):
 		self._recognitionDialog.label.setPixmap(QPixmap.fromImage(qim))
 
 	def recognitionClosingEvent(self):
-		self.subscriber_recog_flag.unregister()
-		self.subscriber_recog_rect.unregister()
-		self.subscriber_recog_keypoints.unregister()
-		self.subscriber_recog_matchedKeypoints.unregister()
-		self.subscriber_recog_recognizedID.unregister()
-		self.subscriber_recog_recognition.unregister()
-		self.subscriber_recog_boundingBoxes.unregister()
+		if hasattr(self, 'subscriber_recog_flag'):
+			self.subscriber_recog_flag.unregister()
+		if hasattr(self, 'subscriber_recog_rect'):
+			self.subscriber_recog_rect.unregister()
+		if hasattr(self, 'subscriber_recog_keypoints'):
+			self.subscriber_recog_keypoints.unregister()
+		if hasattr(self, 'subscriber_recog_matchedKeypoints'):
+			self.subscriber_recog_matchedKeypoints.unregister()
+		if hasattr(self, 'subscriber_recog_recognizedID'):
+			self.subscriber_recog_recognizedID.unregister()
+		if hasattr(self, 'subscriber_recog_recognition'):
+			self.subscriber_recog_recognition.unregister()
+		if hasattr(self, 'subscriber_recog_boundingBoxes'):
+			self.subscriber_recog_boundingBoxes.unregister()
 		
 	def applyColorMap(self, img):
 		"""
