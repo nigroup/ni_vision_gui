@@ -4,6 +4,7 @@ import rospy
 import rospkg
 import rosgraph
 import numpy as np
+from datetime import datetime
 import matplotlib.cm as cm
 import matplotlib.colors as colors
 from SegmentationParameterDialog import SegmentationParameterDialog
@@ -116,7 +117,7 @@ class MyPlugin(Plugin):
 		self.connect(self._widget.resetButton, SIGNAL('clicked()'), self.resetParameter)
 		
 		# Snapshot-Button
-		self.connect(self._widget.snapshotButton, SIGNAL('clicked()'), self.snapshotTaken)
+		self.connect(self._widget.snapshotButton, SIGNAL('clicked()'), self.takeSnapshot)
 
 		# new events
 		self.connect(self._widget.rgbButton, SIGNAL('clicked()'), self.showrgb)
@@ -308,20 +309,19 @@ class MyPlugin(Plugin):
 		self.publishParameterInfo()
 	
 	# Saves all images from the currently active QVGA-Streams to disk
-	def snapshotTaken(self):
-		#~ path = 'zNiData/Snapshots/'
-		#~ directory = os.path.dirname(path)
-		#~ if not os.path.exists(directory):
-			#~ os.makedirs(directory)
-		#~ if self._widget.label_1.pixmap():
-			#~ (self._widget.label_1.pixmap()).save(directory + '/'+ self._widget.comboBox_1.currentText(), self._widget.fileSuffixComboBox.currentText())
-		#~ if self._widget.label_2.pixmap():
-			#~ (self._widget.label_2.pixmap()).save(directory + '/'+ self._widget.comboBox_2.currentText(), self._widget.fileSuffixComboBox.currentText())
-		#~ if self._widget.label_3.pixmap():
-			#~ (self._widget.label_3.pixmap()).save(directory + '/'+ self._widget.comboBox_3.currentText(), self._widget.fileSuffixComboBox.currentText())
-		#~ if self._widget.label_4.pixmap():
-			#~ (self._widget.label_4.pixmap()).save(directory + '/'+ self._widget.comboBox_4.currentText(), self._widget.fileSuffixComboBox.currentText())
-		pass
+	def takeSnapshot(self):
+		path2 = str(os.getenv("HOME")) + '/zNiData/Snapshots/' + str(datetime.now()) + '/'
+		directory = os.path.dirname(path2)
+		if not os.path.exists(directory):
+			os.makedirs(directory)
+		if hasattr(self,'_rgbDialog') and self._rgbDialog.label.pixmap():
+			(self._rgbDialog.label.pixmap()).save(directory + '/'+ 'RGB', self._widget.fileSuffixComboBox.currentText())
+		if hasattr(self,'_segmentationDialog') and self._segmentationDialog.label.pixmap():
+			(elf._segmentationDialog.label.pixmap()).save(directory + '/'+ 'Segmentation', self._widget.fileSuffixComboBox.currentText())
+		if hasattr(self,'_trackingDialog') and self._trackingDialog.label.pixmap():
+			(self._trackingDialog.label.pixmap()).save(directory + '/'+ 'Tracking', self._widget.fileSuffixComboBox.currentText())
+		if hasattr(self,'_recognitionDialog') and self._recognitionDialog.label.pixmap():
+			(self._recognitionDialog.label.pixmap()).save(directory + '/'+ 'Recognition', self._widget.fileSuffixComboBox.currentText())
 			
 	def resetParameter(self):
 		self._segmentationParameter = copy.deepcopy(self._segmentationParameterReset)
@@ -353,7 +353,7 @@ class MyPlugin(Plugin):
 		msg.flannKnn = self._recognitionParameter["flannKnn"]
 		msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
 		msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
-		rospy.loginfo(msg)
+		#rospy.loginfo(msg)
 		self._pub.publish(msg)
 
 		
