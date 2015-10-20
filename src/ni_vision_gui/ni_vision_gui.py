@@ -281,6 +281,8 @@ class MyPlugin(Plugin):
 		#~ else: # RGB-Image, no conversion needed
 			#~ self._image1 = image_data
 		#~ self.trigger1.emit(data.data)
+		
+		
 	def applyColorMap(self, img):
 		"""
 		Converts grey-scale image in rgb-image by using a color map
