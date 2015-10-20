@@ -130,6 +130,7 @@ class MyPlugin(Plugin):
 		self.initializeRecognitionParameter()
 		
 		self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', Parameter, queue_size = 10)
+		
 	#### When buttons are clicked....
 	
 
@@ -546,9 +547,21 @@ class MyPlugin(Plugin):
 		self._widget.showSiftFeatureLabel.setText(mode)
 		self._recognitionParameter["showSiftFeature"] = mode	
 	
-	def shutdown_plugin(self):
-		# TODO unregister all publishers here
-		pass
+	def shutdown_plugin(self):	
+		if hasattr(self,'_RPDialog'):
+			self._RPDialog.close()
+		if hasattr(self,'_SPDialog'):
+			self._SPDialog.close()
+		if hasattr(self,'_rgbDialog'):
+			self._rgbDialog.close()
+		if hasattr(self,'_segmentationDialog'):
+			self._segmentationDialog.close()
+		if hasattr(self,'_trackingDialog'):
+			self._trackingDialog.close()
+		if hasattr(self,'_recognitionDialog'):
+			self._recognitionDialog.close()
+
+		
 
 	def save_settings(self, plugin_settings, instance_settings):
 		# TODO save intrinsic configuration, usually using:
