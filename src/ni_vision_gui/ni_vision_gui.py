@@ -138,6 +138,7 @@ class MyPlugin(Plugin):
 	def showrgb(self):
 		self.subscriberSegmentation = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackrgb)
 		self._rgbDialog = NormalWindow()
+		self.connect(self._rgbDialog, SIGNAL('closed()'), self.rgbClosingEvent)
 		self._rgbDialog.setWindowTitle('RGB-Stream')
 		self._rgbDialog.show()
 			
@@ -149,6 +150,8 @@ class MyPlugin(Plugin):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
 		self._rgbDialog.label.setPixmap(QPixmap.fromImage(qim))
 
+	def rgbClosingEvent(self):
+		print("Hello")
 
 	# Segmentation
 	def showSegmentation(self):
