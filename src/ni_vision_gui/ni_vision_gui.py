@@ -136,7 +136,7 @@ class MyPlugin(Plugin):
 
 	# RGB-Image
 	def showrgb(self):
-		self.subscriberSegmentation = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackrgb)
+		self.subscriberRGB = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackrgb)
 		self._rgbDialog = NormalWindow()
 		self.connect(self._rgbDialog, SIGNAL('rejected()'), self.rgbClosingEvent)
 		self._rgbDialog.setWindowTitle('RGB-Stream')
@@ -151,7 +151,8 @@ class MyPlugin(Plugin):
 		self._rgbDialog.label.setPixmap(QPixmap.fromImage(qim))
 
 	def rgbClosingEvent(self):
-		self.subscriberSegmentation.unregister()
+		if hasattr(self, 'subscriberRGB'):
+			self.subscriberRGB.unregister()
 
 	# Segmentation
 	def showSegmentation(self):
@@ -171,7 +172,8 @@ class MyPlugin(Plugin):
 		self._segmentationDialog.label.setPixmap(QPixmap.fromImage(qim))
 
 	def segmentationClosingEvent(self):
-		self.subsciberSegmentation.unregister()
+		if hasattr(self, 'subscriberSegmentation'):
+			self.subscriberSegmentation.unregister()
 
 	# Tracking
 	def showTracking(self):
@@ -194,7 +196,8 @@ class MyPlugin(Plugin):
 		self._trackingDialog.label.setPixmap(QPixmap.fromImage(qim))
 		
 	def trackingClosingEvent(self):
-		self.subscriberTracking.unregister()
+		if hasattr(self, 'subscriberTracking'):
+			self.subscriberTracking.unregister()
 		
 	# Recognition
 	def showRecognition(self):
