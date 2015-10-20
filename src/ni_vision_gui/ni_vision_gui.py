@@ -22,7 +22,7 @@ from cv_bridge import CvBridge, CvBridgeError
 from PyQt4.QtCore import pyqtSignal
 from sensor_msgs.msg import Image, CompressedImage
 from std_msgs.msg import Bool, Int32MultiArray, Float32MultiArray, Float32, String
-from rqt_gui.msg import Parameter
+from ni_depth_segmentation.msg import Parameter
 
 class MyPlugin(Plugin):
 	
@@ -128,13 +128,13 @@ class MyPlugin(Plugin):
 		self.initializeSegmentationParameter()
 		self.initializeRecognitionParameter()
 		
-		#self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', Parameter, queue_size = 10)
+		self._pub = rospy.Publisher('/ni/ni_vision_gui/parameter', Parameter, queue_size = 10)
 	#### When buttons are clicked....
 	
 
 	# RGB-Image
 	def showrgb(self):
-		self.subscriberSegmentation = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackrgb)
+		self.subscriberSegmentation = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackrgb)
 		self._rgbDialog = NormalWindow()
 		self._rgbDialog.setWindowTitle('RGB-Stream')
 		self._rgbDialog.show()
@@ -150,7 +150,7 @@ class MyPlugin(Plugin):
 
 	# Segmentation
 	def showSegmentation(self):
-		self.subscriberSegmentation = rospy.Subscriber("ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callbackSegmentation)
+		self.subscriberSegmentation = rospy.Subscriber("/ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callbackSegmentation)
 		self._segmentationDialog = NormalWindow()
 		self._segmentationDialog.setWindowTitle('Segmentation')
 		self._segmentationDialog.show()
@@ -167,7 +167,7 @@ class MyPlugin(Plugin):
 
 	# Tracking
 	def showTracking(self):
-		self.subscriberTracking = rospy.Subscriber("ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
+		self.subscriberTracking = rospy.Subscriber("/ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
 		self._trackingDialog = NormalWindow()
 		self._trackingDialog.setWindowTitle('Tracking')
 		self._trackingDialog.show()
@@ -192,8 +192,8 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/examinedIndex", Float32, self.callbackExaminedID)
-		self.subscriberRecognition = rospy.Subscriber("camera/rgb/image_color", Image, self.callbackRecognition)
-		self.subscriberBoundingBoxes = rospy.Subscriber("ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
+		self.subscriberRecognition = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackRecognition)
+		self.subscriberBoundingBoxes = rospy.Subscriber("/ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._recognitionDialog = NormalWindow()
 		self._recognitionDialog.setWindowTitle('Recognition')
 		self._recognitionDialog.show()
@@ -330,27 +330,28 @@ class MyPlugin(Plugin):
 	# publish new parameter to the rest of the system
 	def publishParameterInfo(self,i):
 		msg = Parameter()
-		msg.siftModel = self._siftModelPath
-		msg.colorModel = self._colorModelPath
-		msg.trackingMode = self._segmentationParameter["trackingMode"]
+		#~ msg.siftModel = self._siftModelPath
+		#~ msg.colorModel = self._colorModelPath
+		#~ msg.trackingMode = self._segmentationParameter["trackingMode"]
 		msg.maxPositionDifference = self._segmentationParameter["maxPositionDifference"]
-		msg.maxColorDifference = self._segmentationParameter["maxColorDifference"]
-		msg.maxSizeDifference = self._segmentationParameter["maxSizeDifference"]
-		msg.positionFactor = self._segmentationParameter["positionFactor"]
-		msg.colorFactor = self._segmentationParameter["colorFactor"]
-		msg.sizeFactor = self._segmentationParameter["sizeFactor"]
-		msg.maxTotalDifference = self._segmentationParameter["maxTotalDifference"]
-		msg.upperSizeLimit = self._segmentationParameter["upperSizeLimit"]
-		msg.lowerSizeLimit = self._segmentationParameter["lowerSizeLimit"]
-		msg.minPixelCount = self._segmentationParameter["minPixelCount"]
-		msg.selectionMode = self._recognitionParameter["selectionMode"]
-		msg.colorDistanceThreshold = self._recognitionParameter["colorDistanceThreshold"]
-		msg.siftScales = self._recognitionParameter["siftScales"]
-		msg.siftInitSigma = self._recognitionParameter["siftInitSigma"]
-		msg.siftPeakThreshold = self._recognitionParameter["siftPeakThreshold"]
-		msg.flannKnn = self._recognitionParameter["flannKnn"]
-		msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
-		msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
+		#~ msg.maxColorDifference = self._segmentationParameter["maxColorDifference"]
+		#~ msg.maxSizeDifference = self._segmentationParameter["maxSizeDifference"]
+		#~ msg.positionFactor = self._segmentationParameter["positionFactor"]
+		#~ msg.colorFactor = self._segmentationParameter["colorFactor"]
+		#~ msg.sizeFactor = self._segmentationParameter["sizeFactor"]
+		#~ msg.maxTotalDifference = self._segmentationParameter["maxTotalDifference"]
+		#~ msg.upperSizeLimit = self._segmentationParameter["upperSizeLimit"]
+		#~ msg.lowerSizeLimit = self._segmentationParameter["lowerSizeLimit"]
+		#~ msg.minPixelCount = self._segmentationParameter["minPixelCount"]
+		#~ msg.selectionMode = self._recognitionParameter["selectionMode"]
+		#~ msg.colorDistanceThreshold = self._recognitionParameter["colorDistanceThreshold"]
+		#~ msg.siftScales = self._recognitionParameter["siftScales"]
+		#~ msg.siftInitSigma = self._recognitionParameter["siftInitSigma"]
+		#~ msg.siftPeakThreshold = self._recognitionParameter["siftPeakThreshold"]
+		#~ msg.flannKnn = self._recognitionParameter["flannKnn"]
+		#~ msg.flannMatchFactor = self._recognitionParameter["flannMatchFactor"]
+		#~ msg.flannMatchCount = self._recognitionParameter["flannMatchCount"]		
+		print("ppppppppppp")
 		rospy.loginfo(msg)
 		self._pub.publish(msg)
 
