@@ -138,7 +138,7 @@ class MyPlugin(Plugin):
 	def showrgb(self):
 		self.subscriberSegmentation = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackrgb)
 		self._rgbDialog = NormalWindow()
-		self.connect(self._rgbDialog, SIGNAL('closed()'), self.rgbClosingEvent)
+		self.connect(self._rgbDialog, SIGNAL('rejected()'), self.rgbClosingEvent)
 		self._rgbDialog.setWindowTitle('RGB-Stream')
 		self._rgbDialog.show()
 			
@@ -151,12 +151,13 @@ class MyPlugin(Plugin):
 		self._rgbDialog.label.setPixmap(QPixmap.fromImage(qim))
 
 	def rgbClosingEvent(self):
-		print("Hello")
+		self.subscriberSegmentation.unregister()
 
 	# Segmentation
 	def showSegmentation(self):
 		self.subscriberSegmentation = rospy.Subscriber("/ni/depth_segmentation/depth_segmentation/map_image_gray", Image, self.callbackSegmentation)
 		self._segmentationDialog = NormalWindow()
+		self.connect(self._segmentationDialog, SIGNAL('rejected()'), self.segmentationClosingEvent)
 		self._segmentationDialog.setWindowTitle('Segmentation')
 		self._segmentationDialog.show()
 			
@@ -169,11 +170,14 @@ class MyPlugin(Plugin):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
 		self._segmentationDialog.label.setPixmap(QPixmap.fromImage(qim))
 
+	def segmentationClosingEvent(self):
+		self.subsciberSegmentation.unregister()
 
 	# Tracking
 	def showTracking(self):
 		self.subscriberTracking = rospy.Subscriber("/ni/depth_segmentation/surfaces/image", Image, self.callbackTracking)
 		self._trackingDialog = NormalWindow()
+		self.connect(self._trackingDialog, SIGNAL('rejected()'), self.trackingClosingEvent)
 		self._trackingDialog.setWindowTitle('Tracking')
 		self._trackingDialog.show()
 			
@@ -189,6 +193,8 @@ class MyPlugin(Plugin):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
 		self._trackingDialog.label.setPixmap(QPixmap.fromImage(qim))
 		
+	def trackingClosingEvent(self):
+		self.subscriberTracking.unregister()
 		
 	# Recognition
 	def showRecognition(self):
@@ -197,9 +203,10 @@ class MyPlugin(Plugin):
 		self.subscriber_recog_keypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/keypoints", Float32MultiArray, self.callbackKeypoints)
 		self.subscriber_recog_matchedKeypoints = rospy.Subscriber("/ni/depth_segmentation/recognition/matchedKeypoints", Float32MultiArray, self.callbackMatchedKeypoints)
 		self.subscriber_recog_recognizedID = rospy.Subscriber("/ni/depth_segmentation/recognition/examinedIndex", Float32, self.callbackExaminedID)
-		self.subscriberRecognition = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackRecognition)
-		self.subscriberBoundingBoxes = rospy.Subscriber("/ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
+		self.subscriber_recog_recognition = rospy.Subscriber("/camera/rgb/image_color", Image, self.callbackRecognition)
+		self.subscriber_recog_boundingBoxes = rospy.Subscriber("/ni/depth_segmentation/boundingBoxes", Float32MultiArray, self.callbackBoundingBoxes)
 		self._recognitionDialog = NormalWindow()
+		self.connect(self._recognitionDialog, SIGNAL('rejected()'), self.recognitionClosingEvent)
 		self._recognitionDialog.setWindowTitle('Recognition')
 		self._recognitionDialog.show()
 			
@@ -265,27 +272,15 @@ class MyPlugin(Plugin):
 	def paintRecognition(self, img):
 		qim = QImage(img,img.shape[1],img.shape[0],QImage.Format_RGB888)
 		self._recognitionDialog.label.setPixmap(QPixmap.fromImage(qim))
-		
-	# self.subscriber1.unregister()
 
-	
-	
-	###### This functions are called everytime a new message arrives, data is the message it receives #####
-
-	#~ def callback1(self, data):
-		#~ image_data = self._bridge.imgmsg_to_cv2(data, "rgb8")
-		#~ image_data[0,0,:] = 0
-		#~ image_data[0,1,:] = 12
-		#~ print(image_data[0,0:2,:], image_data.max()) 
-		#~ if self._widget.comboBox_1.currentIndex() != 1:
-			#~ norm = colors.Normalize(image_data.min(), image_data.max())
-			#~ image_colors = cm.gist_ncar(norm(image_data[:,:,0])) 
-			#~ image_colors = image_colors[:,:,0:3]
-			#~ self._image1 = (255*image_colors).astype('byte')
-		#~ else: # RGB-Image, no conversion needed
-			#~ self._image1 = image_data
-		#~ self.trigger1.emit(data.data)
-		
+	def recognitionClosingEvent(self):
+		self.subscriber_recog_flag.unregister()
+		self.subscriber_recog_rect.unregister()
+		self.subscriber_recog_keypoints.unregister()
+		self.subscriber_recog_matchedKeypoints.unregister()
+		self.subscriber_recog_recognizedID.unregister()
+		self.subscriber_recog_recognition.unregister()
+		self.subscriber_recog_boundingBoxes.unregister()
 		
 	def applyColorMap(self, img):
 		"""
