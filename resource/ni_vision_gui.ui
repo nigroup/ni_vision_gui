@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>403</width>
-    <height>593</height>
+    <height>565</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -22,7 +22,7 @@
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
        <widget class="QWidget" name="widget" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,0">
+        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0">
          <property name="sizeConstraint">
           <enum>QLayout::SetFixedSize</enum>
          </property>
@@ -35,7 +35,7 @@
             <item>
              <widget class="QToolBox" name="toolBox">
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="Streams">
                <property name="geometry">
@@ -43,7 +43,7 @@
                  <x>0</x>
                  <y>0</y>
                  <width>331</width>
-                 <height>302</height>
+                 <height>369</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -142,27 +142,13 @@
                  </widget>
                 </item>
                 <item row="3" column="0">
-                 <widget class="QPushButton" name="recordTimeButton">
-                  <property name="text">
-                   <string>Record Time</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QPushButton" name="recordVideoButton">
-                  <property name="text">
-                   <string>Record Video</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="4" column="0">
                  <widget class="QPushButton" name="snapshotButton">
                   <property name="text">
                    <string>Snapshot</string>
                   </property>
                  </widget>
                 </item>
-                <item row="4" column="1">
+                <item row="3" column="1">
                  <widget class="QComboBox" name="fileSuffixComboBox">
                   <item>
                    <property name="text">
@@ -181,7 +167,7 @@
                   </item>
                  </widget>
                 </item>
-                <item row="5" column="0">
+                <item row="4" column="0">
                  <widget class="QPushButton" name="resetButton">
                   <property name="text">
                    <string>Reset Parameter</string>
@@ -195,8 +181,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>331</width>
-                 <height>302</height>
+                 <width>253</width>
+                 <height>277</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -367,8 +353,8 @@
                 <rect>
                  <x>0</x>
                  <y>0</y>
-                 <width>331</width>
-                 <height>302</height>
+                 <width>318</width>
+                 <height>248</height>
                 </rect>
                </property>
                <attribute name="label">
@@ -520,86 +506,6 @@
                 </item>
                </layout>
               </widget>
-              <widget class="QWidget" name="page_3">
-               <property name="geometry">
-                <rect>
-                 <x>0</x>
-                 <y>0</y>
-                 <width>331</width>
-                 <height>302</height>
-                </rect>
-               </property>
-               <attribute name="label">
-                <string>Time Measurements</string>
-               </attribute>
-               <layout class="QFormLayout" name="formLayout_4">
-                <item row="0" column="0">
-                 <widget class="QLabel" name="label_43">
-                  <property name="text">
-                   <string>Segmentation</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="0" column="1">
-                 <widget class="QLabel" name="label_28">
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="0">
-                 <widget class="QLabel" name="label_45">
-                  <property name="text">
-                   <string>Tracking</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="1" column="1">
-                 <widget class="QLabel" name="label_44">
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="0">
-                 <widget class="QLabel" name="label_46">
-                  <property name="text">
-                   <string>Recognition</string>
-                  </property>
-                 </widget>
-                </item>
-                <item row="3" column="1">
-                 <widget class="QLabel" name="label_47">
-                  <property name="text">
-                   <string>TextLabel</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </widget>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QWidget" name="Info" native="true">
-           <layout class="QVBoxLayout" name="verticalLayout_2">
-            <property name="sizeConstraint">
-             <enum>QLayout::SetFixedSize</enum>
-            </property>
-            <item>
-             <widget class="QLabel" name="label_54">
-              <property name="text">
-               <string>rate</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_21">
-              <property name="text">
-               <string>average rate</string>
-              </property>
              </widget>
             </item>
            </layout>

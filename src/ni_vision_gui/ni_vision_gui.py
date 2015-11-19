@@ -224,8 +224,8 @@ class MyPlugin(Plugin):
 			if self._examinedSurfaceID not in self._recognizedSurfaceIDs:
 				self._recognizedSurfaceIDs.append(self._examinedSurfaceID)
 				
-		print(self._boundingBoxes)
-		print(self._recognizedSurfaceIDs)
+		#print(self._boundingBoxes)
+		#print(self._recognizedSurfaceIDs)
 		# draw bounding boxes around all recognized surfaces
 		for i in self._recognizedSurfaceIDs:
 			if i in list(self._boundingBoxes[:,4]):
