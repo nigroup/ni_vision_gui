@@ -84,8 +84,9 @@ class MyPlugin(Plugin):
 		# Create additional dictonaries in case of reset
 		self._recognitionParameterReset = copy.deepcopy(self._recognitionParameter)
 		self._segmentationParameterReset = copy.deepcopy(self._segmentationParameter)
-		self._siftModelPath = ""
-		self._colorModelPath = ""
+		
+		self._siftModelPath = "/home/fritjof/Video/models/Lib8B/lib_sift_DanKlorix_0015.yaml"
+		self._colorModelPath = "/home/fritjof/Video/models/Lib8B/simplelib_3dch_DanKlorix.yaml"
 		
 		
 		self._recogFlag = True
@@ -232,7 +233,6 @@ class MyPlugin(Plugin):
 				tmp = self._boundingBoxes[list(self._boundingBoxes[:,4]).index(i),:4]
 				rectangle(img, (tmp[0],tmp[1]), (tmp[2],tmp[3]), (0,255,0), thickness = 3)
 			else:
-				print("Index not found")
 				self._recognizedSurfaceIDs.remove(i)
 				
 	
@@ -243,7 +243,7 @@ class MyPlugin(Plugin):
 		# draw SIFT-feature in image
 		if self._showSiftFeature:
 			for i in range(self._keypoints.size / 2):
-				if self._matchedKeypoints[i]:
+				if len(self._matchedKeypoints) > i and self._matchedKeypoints[i]:
 					rectangle(img, (int(self._keypoints[i][0])-2, int(self._keypoints[i][1])-2),
 							 (int(self._keypoints[i][0])+2, int(self._keypoints[i][1])+2), (0,0,255))
 				else:
