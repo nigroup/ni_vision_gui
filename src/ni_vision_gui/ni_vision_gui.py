@@ -6,7 +6,6 @@ import rosgraph
 import numpy as np
 from datetime import datetime
 import matplotlib.cm as cm
-import matplotlib.colors as colors
 from SegmentationParameterDialog import SegmentationParameterDialog
 from RecognitionParameterDialog import RecognitionParameterDialog
 from NormalWindow import NormalWindow
@@ -88,7 +87,8 @@ class MyPlugin(Plugin):
 		self._siftModelPath = "/home/fritjof/Video/models/Lib8B/lib_sift_DanKlorix_0015.yaml"
 		self._colorModelPath = "/home/fritjof/Video/models/Lib8B/simplelib_3dch_DanKlorix.yaml"
 		
-		
+		self._customColorMap = np.random.randint(255, size = (1000,3))
+		self._customColorMap[0,:] = [0,0,0]
 		self._recogFlag = True
 		self._recogData = np.zeros(4)
 		self._recogRect = np.zeros(4).astype(int)
@@ -298,10 +298,10 @@ class MyPlugin(Plugin):
 		Input: grey-scale image
 		Output: rgb-image
 		"""
-		norm = colors.Normalize(img.min(), img.max())
-		image_colors = cm.gist_ncar(norm(img[:,:,0])) 
-		image_colors = image_colors[:,:,0:3]
-		img = (255*image_colors).astype('byte')
+		# Assign colors from a specific color map to grey values
+		for i in range(img.shape[0]):
+			for j in range(img.shape[1]):
+				img[i,j,:] = self._customColorMap[img[i,j,0],:]
 		return img
 	
 	# FileDialogs
